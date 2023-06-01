@@ -14,6 +14,7 @@ const FundCard = ({
   handleClick,
 }) => {
   const remainingDays = daysLeft(deadline);
+  let likes = 77;
 
   return (
     <div
@@ -27,27 +28,26 @@ const FundCard = ({
       />
 
       <div className="flex flex-col p-4">
-        <div className="flex flex-row items-center mb-[18px]">
+        <div className="block">
+          <h3 className="font-epilogue font-semibold text-[16px] text-white text-left leading-[26px] truncate">
+            {title}
+          </h3>
+          {/* <p className="mt-[5px] font-epilogue font-normal text-[#808191] text-left leading-[18px] truncate">
+            {description}
+          </p> */}
+        </div>
+        <div className="flex flex-row items-center mb-[6px] mt-[6px]">
           <img
             src={tagType}
             alt="tag"
             className="w-[17px] h-[17px] object-contain"
           />
-          <p className="ml-[12px] mt-[2px] font-epilogue font-medium text-[12px] text-[#808191]">
-            Education
+          <p className="ml-[6px] mt-[5px] font-epilogue font-semibold text-[12px] text-[#b2b3bd] leading-[22px]">
+            {likes} Likes
           </p>
         </div>
 
-        <div className="block">
-          <h3 className="font-epilogue font-semibold text-[16px] text-white text-left leading-[26px] truncate">
-            {title}
-          </h3>
-          <p className="mt-[5px] font-epilogue font-normal text-[#808191] text-left leading-[18px] truncate">
-            {description}
-          </p>
-        </div>
-
-        <div className="flex justify-between flex-wrap mt-[15px] gap-2">
+        <div className="flex justify-between flex-wrap mt-[8px] gap-2">
           <div className="flex flex-col">
             <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">
               {amountCollected}
@@ -57,8 +57,8 @@ const FundCard = ({
             </p>
           </div>
           <div className="flex flex-col">
-            <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">
-              {remainingDays < 0 ? 0 : remainingDays}
+            <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px] text-center">
+              {remainingDays <= 0 ? 0 : remainingDays}
             </h4>
             <p className="mt-[3px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">
               Days Left

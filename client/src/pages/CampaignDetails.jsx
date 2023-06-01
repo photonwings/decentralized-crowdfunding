@@ -69,7 +69,7 @@ const CampaignDetails = () => {
         <div className="flex md:w-[150px] w-full flex-wrap justify-between gap-[30px]">
           <CountBox
             title="Days Left"
-            value={remainingDays < 0 ? 0 : remainingDays}
+            value={remainingDays <= 0 ? 0 : remainingDays}
           />
           <CountBox
             title={`Raised of ${state.target}`}
