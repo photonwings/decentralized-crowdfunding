@@ -3,9 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
 import { useStateContext } from "../context";
-import { CountBox, CustomButton, Loader } from "../components";
+import { CountBox, CustomButton, Loader, DonatorCard } from "../components";
 import { calculateBarPercentage, daysLeft } from "../utils";
 import { thirdweb } from "../assets";
+import { tempDonation } from "../temp/data";
 
 const CampaignDetails = () => {
   const { state } = useLocation();
@@ -22,6 +23,8 @@ const CampaignDetails = () => {
     const data = await getDonations(state.pId);
 
     setDonators(data);
+    // console.log(data);
+    setDonators(tempDonation);
   };
 
   useEffect(() => {
@@ -51,7 +54,7 @@ const CampaignDetails = () => {
     <div>
       {isLoading && <Loader />}
       {/* Upper portion: Image and count boxes */}
-      <div className="w-full flex md:flex-row flex-col mt-10 gap-[30px]">
+      <div className="w-full flex md:flex-row flex-col mt-10 gap-[20px]">
         {/* Image and progress bar */}
         <div className="flex-1 flex-col">
           <img
@@ -133,10 +136,10 @@ const CampaignDetails = () => {
         </div>
       </div>
       {/* Bottom section: Creator, description and donors */}
-      <div className="mt-[60px] flex lg:flex-row flex-col gap-5">
+      <div className="mt-[40px] flex lg:flex-row flex-col gap-5">
         <div className="flex flex-col gap-[40px]">
           {/* Creator and description*/}
-          <div className="flex md:flex-row flex-col justify-between gap-[10px]">
+          <div className="flex md:flex-row flex-col justify-between gap-[20px]">
             {/* Creator */}
             <div className="min-w-fit  bg-[#1c1c24] p-5 rounded-[10px]">
               <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
@@ -166,7 +169,7 @@ const CampaignDetails = () => {
             {/* Story and description */}
             <div className="bg-[#1c1c24] p-5 rounded-[10px] ">
               <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
-                Story
+                {state.title}
               </h4>
 
               <div className="mt-[20px]">
@@ -177,34 +180,41 @@ const CampaignDetails = () => {
             </div>
           </div>
           {/* Donor list */}
-          <div>
-            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
-              Donators
-            </h4>
+          <div className="flex lg:flex-row flex-col justify-between gap-[20px]">
+            <div className="bg-[#1c1c24] p-[20px] rounded-[10px]">
+              <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+                Donators
+              </h4>
 
-            <div className="mt-[20px] flex flex-col gap-4">
-              {donators.length > 0 ? (
-                donators.map((item, index) => (
-                  <div
-                    key={`${item.donator}-${index}`}
-                    className="flex justify-between items-center gap-4"
-                  >
-                    <p className="font-epilogue font-normal text-[16px] text-[#b2b3bd] leading-[26px] break-ll">
-                      {index + 1}.{" "}
-                      {`${item.donator.toString().slice(0, 5)}...${item.donator
-                        .toString()
-                        .slice(-4)}`}
-                    </p>
-                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] break-ll">
-                      {item.donation}
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
-                  No donators yet. Be the first one!
-                </p>
-              )}
+              <div className="mt-[20px]  flex flex-col gap-4 overflow-auto h-[500px]">
+                {donators.length > 0 ? (
+                  donators.map((item, index) => (
+                    <DonatorCard item={item} index={index} />
+                  ))
+                ) : (
+                  <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
+                    No donators yet. Be the first one!
+                  </p>
+                )}
+              </div>
+            </div>
+            {/* Copy */}
+            <div className="w-full bg-[#1c1c24] p-[20px] rounded-[10px]">
+              <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+                Comments
+              </h4>
+
+              <div className="mt-[20px] mb-[20px] flex flex-col gap-4 overflow-auto h-[500px]">
+                {donators.length > 0 ? (
+                  donators.map((item, index) => (
+                    <DonatorCard item={item} index={index} />
+                  ))
+                ) : (
+                  <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
+                    No Comments yet. Be the first one!
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>
