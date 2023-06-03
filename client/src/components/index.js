@@ -9,3 +9,4 @@ export { default as Loader } from "./Loader";
 export { default as DonatorCard } from "./DonatorCard";
 export { default as CommentCard } from "./CommentCard";
 export { default as SearchBar } from "./SearchBar";
+export { default as PollingCard } from "./PollingCard";

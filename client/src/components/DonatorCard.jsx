@@ -5,7 +5,7 @@ const DonatorCard = ({ item, index }) => {
   return (
     <div
       key={`${item.donator}-${index}`}
-      className="flex justify-between items-center gap-5 bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-4 min-w-max"
+      className="flex justify-between items-center gap-5 bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-4 min-w-[300px]"
     >
       <div className="m-[10px] flex flex-row items-center flex-wrap gap-[10px]">
         <div className="w-[40px] h-[40px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">
@@ -26,7 +26,7 @@ const DonatorCard = ({ item, index }) => {
           </p>
         </div>
       </div>
-      <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] break-ll">
+      <p className="font-epilogue font-normal text-[16px] text-green-300 leading-[26px] break-ll">
         {item.donation} ETH
       </p>
     </div>

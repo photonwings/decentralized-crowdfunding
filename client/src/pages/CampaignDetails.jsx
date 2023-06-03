@@ -10,10 +10,11 @@ import {
   DonatorCard,
   CommentCard,
   SearchBar,
+  PollingCard,
 } from "../components";
 import { calculateBarPercentage, daysLeft } from "../utils";
 import { send, thirdweb } from "../assets";
-import { tempDonation, tempComment } from "../temp/data";
+import { tempDonation, tempComment, tempPoll } from "../temp/data";
 
 const CampaignDetails = () => {
   const { state } = useLocation();
@@ -227,6 +228,25 @@ const CampaignDetails = () => {
                 icon={send}
                 style="bg-[#13131a] max-w-full"
               />
+            </div>
+          </div>
+          {/* Polling and Updates */}
+          <div className="flex lg:flex-row flex-col justify-between gap-[20px]">
+            <div className="bg-[#1c1c24] p-[20px] rounded-[10px]">
+            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+                Poll
+              </h4>
+              <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px]">
+                {tempPoll.length > 0 ? (
+                  tempPoll.map((item, index) => (
+                    <PollingCard item={item} index={index} />
+                  ))
+                ) : (
+                  <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
+                    No Comments yet. Be the first one!
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -99,7 +99,8 @@ export const tempDonation = [
 export const tempComment = [
   {
     nickName: "PhotonWings",
-    comment: "This is good project. This is good project. This is good project. This is good project. This is good project. This is good project. This is good project. This is good project. This is good project.",
+    comment:
+      "This is good project. This is good project. This is good project. This is good project. This is good project. This is good project. This is good project. This is good project. This is good project.",
     profilePic: "",
     isOwner: true,
     dateOfComment: "12/12/2023",
@@ -166,5 +167,24 @@ export const tempComment = [
     profilePic: "",
     isOwner: false,
     dateOfComment: "12/12/2023",
+  },
+];
+
+export const tempPoll = [
+  {
+    name: "Java",
+    percentage: 10,
+  },
+  {
+    name: "JavaScript",
+    percentage: 40,
+  },
+  {
+    name: "Java",
+    percentage: 10,
+  },
+  {
+    name: "JavaScript",
+    percentage: 40,
   },
 ];
