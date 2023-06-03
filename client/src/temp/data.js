@@ -188,3 +188,45 @@ export const tempPoll = [
     percentage: 40,
   },
 ];
+
+export const tempProgress = [
+  {
+    title: "This is the first progress",
+    dateOfProgress: "12/12/2023",
+    description: "This is description.",
+  },
+  {
+    title: "This is the first progress",
+    dateOfProgress: "12/12/2023",
+    description:
+      "This is description.This is description.This is description.This is description.This is description.This is description.This is description.",
+  },
+  {
+    title: "This is the first progress",
+    dateOfProgress: "12/12/2023",
+    description: "This is description.",
+  },
+  {
+    title: "This is the first progress",
+    dateOfProgress: "12/12/2023",
+    description:
+      "This is description.This is description.This is description.This is description.This is description.This is description.This is description.",
+  },
+  {
+    title: "This is the first progress",
+    dateOfProgress: "12/12/2023",
+    description: "This is description.",
+  },
+  {
+    title: "This is the first progress",
+    dateOfProgress: "12/12/2023",
+    description:
+      "This is description.This is description.This is description.This is description.This is description.This is description.This is description.",
+  },
+  {
+    title: "This is the first progress",
+    dateOfProgress: "12/12/2023",
+    description:
+      "This is description.This is description.This is description.This is description.This is description.This is description.This is description.",
+  },
+];

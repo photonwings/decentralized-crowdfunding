@@ -14,7 +14,13 @@ import {
 } from "../components";
 import { calculateBarPercentage, daysLeft } from "../utils";
 import { send, thirdweb } from "../assets";
-import { tempDonation, tempComment, tempPoll } from "../temp/data";
+import {
+  tempDonation,
+  tempComment,
+  tempPoll,
+  tempProgress,
+} from "../temp/data";
+import ProgressCard from "../components/ProgressCard";
 
 const CampaignDetails = () => {
   const { state } = useLocation();
@@ -59,7 +65,7 @@ const CampaignDetails = () => {
   const nickName = "PhotonWings";
 
   return (
-    <div>
+    <div className="mb-10">
       {isLoading && <Loader />}
       {/* Upper portion: Image and count boxes */}
       <div className="w-full flex md:flex-row flex-col mt-10 gap-[20px]">
@@ -232,22 +238,45 @@ const CampaignDetails = () => {
           </div>
           {/* Polling and Updates */}
           <div className="flex lg:flex-row flex-col justify-between gap-[20px]">
-            <div className="bg-[#1c1c24] p-[20px] rounded-[10px]">
-            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
-                Poll
-              </h4>
-              <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px]">
-                {tempPoll.length > 0 ? (
-                  tempPoll.map((item, index) => (
-                    <PollingCard item={item} index={index} />
-                  ))
-                ) : (
-                  <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
-                    No Comments yet. Be the first one!
-                  </p>
-                )}
+            {/* Polling */}
+            {tempPoll.length > 0 && (
+              <div className="bg-[#1c1c24] p-[20px] rounded-[10px]">
+                <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+                  Poll
+                </h4>
+                <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px]">
+                  {tempPoll.length > 0 ? (
+                    tempPoll.map((item, index) => (
+                      <PollingCard item={item} index={index} />
+                    ))
+                  ) : (
+                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
+                      No current poll...
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
+            {/* Prgress */}
+            {tempProgress.length > 0 && (
+              <div className="w-full bg-[#1c1c24] p-[20px] rounded-[10px]">
+                <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+                  Progress
+                </h4>
+                {/* <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px]"> */}
+                <div className="mt-[20px] mb-[10px] grid grid-flow-row  xl:grid-cols-2 gap-[10px] overflow-auto h-[315px]">
+                  {tempProgress.length > 0 ? (
+                    tempProgress.map((item, index) => (
+                      <ProgressCard item={item} index={index} />
+                    ))
+                  ) : (
+                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
+                      No progress update yet...
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
