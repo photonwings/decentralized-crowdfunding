@@ -13,6 +13,7 @@ import money from "./money.svg";
 import loader from "./loader.svg";
 import thirdweb from "./thirdweb.png";
 import send from "./send.svg";
+import logoImage from "./fundbits-high-resolution-logo-color-on-transparent-background.png";
 
 export {
   tagType,
@@ -30,4 +31,5 @@ export {
   loader,
   thirdweb,
   send,
+  logoImage,
 };
