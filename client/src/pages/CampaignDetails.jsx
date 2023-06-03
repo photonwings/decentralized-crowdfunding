@@ -3,10 +3,17 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
 import { useStateContext } from "../context";
-import { CountBox, CustomButton, Loader, DonatorCard } from "../components";
+import {
+  CountBox,
+  CustomButton,
+  Loader,
+  DonatorCard,
+  CommentCard,
+  SearchBar,
+} from "../components";
 import { calculateBarPercentage, daysLeft } from "../utils";
-import { thirdweb } from "../assets";
-import { tempDonation } from "../temp/data";
+import { send, thirdweb } from "../assets";
+import { tempDonation, tempComment } from "../temp/data";
 
 const CampaignDetails = () => {
   const { state } = useLocation();
@@ -179,14 +186,14 @@ const CampaignDetails = () => {
               </div>
             </div>
           </div>
-          {/* Donor list */}
+          {/* Donor list and comment*/}
           <div className="flex lg:flex-row flex-col justify-between gap-[20px]">
             <div className="bg-[#1c1c24] p-[20px] rounded-[10px]">
               <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
                 Donators
               </h4>
 
-              <div className="mt-[20px]  flex flex-col gap-4 overflow-auto h-[500px]">
+              <div className="mt-[20px]  flex flex-col gap-4 overflow-auto h-[570px] overflow-x-hidden">
                 {donators.length > 0 ? (
                   donators.map((item, index) => (
                     <DonatorCard item={item} index={index} />
@@ -198,16 +205,16 @@ const CampaignDetails = () => {
                 )}
               </div>
             </div>
-            {/* Copy */}
+            {/* Comments */}
             <div className="w-full bg-[#1c1c24] p-[20px] rounded-[10px]">
               <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
                 Comments
               </h4>
 
               <div className="mt-[20px] mb-[20px] flex flex-col gap-4 overflow-auto h-[500px]">
-                {donators.length > 0 ? (
-                  donators.map((item, index) => (
-                    <DonatorCard item={item} index={index} />
+                {tempComment.length > 0 ? (
+                  tempComment.map((item, index) => (
+                    <CommentCard item={item} index={index} />
                   ))
                 ) : (
                   <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
@@ -215,6 +222,11 @@ const CampaignDetails = () => {
                   </p>
                 )}
               </div>
+              <SearchBar
+                placeholder="Add a comment..."
+                icon={send}
+                style="bg-[#13131a] max-w-full"
+              />
             </div>
           </div>
         </div>

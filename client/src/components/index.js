@@ -7,3 +7,5 @@ export { default as FundCard } from "./FundCard";
 export { default as CountBox } from "./CountBox";
 export { default as Loader } from "./Loader";
 export { default as DonatorCard } from "./DonatorCard";
+export { default as CommentCard } from "./CommentCard";
+export { default as SearchBar } from "./SearchBar";

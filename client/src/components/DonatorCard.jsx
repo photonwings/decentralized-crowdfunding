@@ -7,7 +7,7 @@ const DonatorCard = ({ item, index }) => {
       key={`${item.donator}-${index}`}
       className="flex justify-between items-center gap-5 bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-4 min-w-max"
     >
-      <div className="m-[10px] flex flex-row items-center flex-wrap gap-[14px]">
+      <div className="m-[10px] flex flex-row items-center flex-wrap gap-[10px]">
         <div className="w-[40px] h-[40px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">
           <img
             src={thirdweb}
