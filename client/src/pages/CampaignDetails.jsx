@@ -65,10 +65,10 @@ const CampaignDetails = () => {
   const nickName = "PhotonWings";
 
   return (
-    <div className="mb-10">
+    <div className="mb-10 ">
       {isLoading && <Loader />}
       {/* Upper portion: Image and count boxes */}
-      <div className="w-full flex md:flex-row flex-col mt-10 gap-[20px]">
+      <div className="w-full flex md:flex-row flex-col mt-10 gap-[20px] ">
         {/* Image and progress bar */}
         <div className="flex-1 flex-col">
           <img
@@ -124,7 +124,9 @@ const CampaignDetails = () => {
                 type="number"
                 placeholder="ETH 0.1"
                 step="0.01"
-                className="w-full py-[10px] sm:px-[20px] px-[15px] outline-none border-[1px] border-[#3a3a43] bg-transparent font-epilogue text-white text-[18px] leading-[30px] placeholder:text-[#4b5264] rounded-[10px]"
+                className="w-full py-[10px] sm:px-[20px] px-[15px] outline-none 
+                border-[1px] border-[#3a3a43] bg-transparent font-epilogue 
+                text-white text-[18px] leading-[30px] placeholder:text-[#4b5264] rounded-[10px]"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />
@@ -200,7 +202,7 @@ const CampaignDetails = () => {
                 Donators
               </h4>
 
-              <div className="mt-[20px]  flex flex-col gap-4 overflow-auto h-[570px] overflow-x-hidden">
+              <div className="mt-[20px]  flex flex-col gap-4 overflow-auto h-[570px] overflow-x-hidden scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                 {donators.length > 0 ? (
                   donators.map((item, index) => (
                     <DonatorCard item={item} index={index} />
@@ -218,7 +220,7 @@ const CampaignDetails = () => {
                 Comments
               </h4>
 
-              <div className="mt-[20px] mb-[20px] flex flex-col gap-4 overflow-auto h-[500px]">
+              <div className="mt-[20px] mb-[20px] flex flex-col gap-4 overflow-auto h-[500px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                 {tempComment.length > 0 ? (
                   tempComment.map((item, index) => (
                     <CommentCard item={item} index={index} />
@@ -244,7 +246,7 @@ const CampaignDetails = () => {
                 <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
                   Poll
                 </h4>
-                <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px]">
+                <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                   {tempPoll.length > 0 ? (
                     tempPoll.map((item, index) => (
                       <PollingCard item={item} index={index} />
@@ -264,7 +266,7 @@ const CampaignDetails = () => {
                   Progress
                 </h4>
                 {/* <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px]"> */}
-                <div className="mt-[20px] mb-[10px] grid grid-flow-row  xl:grid-cols-2 gap-[10px] overflow-auto h-[315px]">
+                <div className="mt-[20px] mb-[10px] grid grid-flow-row  xl:grid-cols-2 gap-[10px] overflow-auto overflow-x-hidden h-[315px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                   {tempProgress.length > 0 ? (
                     tempProgress.map((item, index) => (
                       <ProgressCard item={item} index={index} />
