@@ -34,9 +34,9 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
 
         {!isLoading &&
           campaigns.length > 0 &&
-          campaigns.map((campaign) => (
+          campaigns.map((campaign, index) => (
             <FundCard
-              key={campaign.id}
+              key={index}
               {...campaign}
               handleClick={() => handleNavigate(campaign)}
             />

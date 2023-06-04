@@ -4,7 +4,6 @@ import { thirdweb } from "../assets";
 const CommentCard = ({ item, index }) => {
   return (
     <div
-      key={`${item.nickName}-${index}`}
       className=" bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-4"
     >
       <div className="m-[10px] flex flex-row items-center flex-wrap gap-[10px]">

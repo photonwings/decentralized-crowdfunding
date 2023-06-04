@@ -4,7 +4,6 @@ import { thirdweb } from "../assets";
 const DonatorCard = ({ item, index }) => {
   return (
     <div
-      key={`${item.donator}-${index}`}
       className="flex justify-between items-center gap-5 bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-4 min-w-[300px]"
     >
       <div className="m-[10px] flex flex-row items-center flex-wrap gap-[10px]">

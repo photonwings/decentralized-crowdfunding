@@ -205,7 +205,7 @@ const CampaignDetails = () => {
               <div className="mt-[20px]  flex flex-col gap-4 overflow-auto h-[570px] overflow-x-hidden scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                 {donators.length > 0 ? (
                   donators.map((item, index) => (
-                    <DonatorCard item={item} index={index} />
+                    <DonatorCard key={index} item={item} index={index} />
                   ))
                 ) : (
                   <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
@@ -223,7 +223,7 @@ const CampaignDetails = () => {
               <div className="mt-[20px] mb-[20px] flex flex-col gap-4 overflow-auto h-[500px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                 {tempComment.length > 0 ? (
                   tempComment.map((item, index) => (
-                    <CommentCard item={item} index={index} />
+                    <CommentCard key={index} item={item} index={index} />
                   ))
                 ) : (
                   <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
@@ -249,7 +249,7 @@ const CampaignDetails = () => {
                 <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                   {tempPoll.length > 0 ? (
                     tempPoll.map((item, index) => (
-                      <PollingCard item={item} index={index} />
+                      <PollingCard key={index} item={item} index={index} />
                     ))
                   ) : (
                     <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
@@ -269,7 +269,7 @@ const CampaignDetails = () => {
                 <div className="mt-[20px] mb-[10px] grid grid-flow-row  xl:grid-cols-2 gap-[10px] overflow-auto overflow-x-hidden h-[315px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                   {tempProgress.length > 0 ? (
                     tempProgress.map((item, index) => (
-                      <ProgressCard item={item} index={index} />
+                      <ProgressCard key={index} item={item} index={index} />
                     ))
                   ) : (
                     <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">

@@ -3,7 +3,6 @@ import React from "react";
 const PollingCard = ({ index, item }) => {
   return (
     <div
-      key={`${item.name}-${index}`}
       className="flex justify-between items-center gap-[100px] bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-2 min-w-[320px] "
     >
       <div className="m-[10px] flex flex-row items-center flex-wrap gap-[10px]">
