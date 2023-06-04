@@ -1,7 +1,7 @@
 import React from "react";
 import { thirdweb } from "../assets";
 
-const CommentCard = ({ item, index }) => {
+const CommentCard = ({ item }) => {
   return (
     <div
       className=" bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-4"

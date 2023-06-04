@@ -14,6 +14,9 @@ import loader from "./loader.svg";
 import thirdweb from "./thirdweb.png";
 import send from "./send.svg";
 import logoImage from "./fundbits-high-resolution-logo-color-on-transparent-background.png";
+import pen from "./pen.svg";
+import plus from "./plus.svg";
+import close from "./close.svg";
 
 export {
   tagType,
@@ -32,4 +35,7 @@ export {
   thirdweb,
   send,
   logoImage,
+  pen,
+  plus,
+  close,
 };

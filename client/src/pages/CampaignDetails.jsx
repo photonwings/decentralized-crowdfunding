@@ -13,7 +13,7 @@ import {
   PollingCard,
 } from "../components";
 import { calculateBarPercentage, daysLeft } from "../utils";
-import { send, thirdweb } from "../assets";
+import { close, pen, plus, send, thirdweb } from "../assets";
 import {
   tempDonation,
   tempComment,
@@ -62,6 +62,7 @@ const CampaignDetails = () => {
   let likes = 21;
   let isLiked = true;
   const handleLike = () => {};
+  const handleClose = () => {};
   const nickName = "PhotonWings";
 
   return (
@@ -257,11 +258,32 @@ const CampaignDetails = () => {
                     </p>
                   )}
                 </div>
+                {state.isOwner && (
+                  <div>
+                    <SearchBar
+                      placeholder="Add polling option..."
+                      icon={plus}
+                      style="bg-[#13131a] max-w-full"
+                    />
+                    <CustomButton
+                      btnType="button"
+                      title={
+                        <img
+                          src={close}
+                          alt="close"
+                          className="w-[30px] h-[30px] ml-auto mr-auto"
+                        />
+                      }
+                      styles={"bg-red-600 mt-[10px] w-full"}
+                      handleClick={handleClose}
+                    />
+                  </div>
+                )}
               </div>
             )}
             {/* Prgress */}
             {tempProgress.length > 0 && (
-              <div className="w-full bg-[#1c1c24] p-[20px] rounded-[10px]">
+              <div className="w-full  bg-[#1c1c24] p-[20px] rounded-[10px]">
                 <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
                   Progress
                 </h4>
@@ -277,6 +299,20 @@ const CampaignDetails = () => {
                     </p>
                   )}
                 </div>
+                {state.isOwner && (
+                  <div>
+                    <SearchBar
+                      placeholder="Write title to progress card..."
+                      style="bg-[#13131a] max-w-full mb-[10px]"
+                      isButtonHidden={true}
+                    />
+                    <SearchBar
+                      placeholder="Write the progress..."
+                      icon={pen}
+                      style="bg-[#13131a] max-w-full"
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>
