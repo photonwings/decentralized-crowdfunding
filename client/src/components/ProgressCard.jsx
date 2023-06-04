@@ -4,7 +4,7 @@ const ProgressCard = ({ index, item }) => {
   return (
     <div
       key={`${item.title}-${index}`}
-      className=" bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-4 w-[400px]"
+      className=" bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-4 "
     >
       <div className="m-[10px] flex flex-row items-center flex-wrap gap-[10px]">
         <div className="flex flex-col gap-[5px]">

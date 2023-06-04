@@ -16,7 +16,7 @@ const PollingCard = ({ index, item }) => {
             className="w-4 h-4 cursor-pointer"
           />
           <label
-            for={item.name}
+            htmlFor={item.name}
             className="font-epilogue  text-[16px] text-white cursor-pointer pl-[10px] pd-[20px]"
           >
             {item.name}
