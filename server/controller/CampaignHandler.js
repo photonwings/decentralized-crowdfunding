@@ -33,10 +33,20 @@ CampaignHandler.getProgress = async (req, res) => {
   }
 };
 
-CampaignHandler.getOption = async (req, res) => {
+CampaignHandler.getOptions = async (req, res) => {
   try {
     const option = req.params;
     const data = await Campaign.getOption(option);
+    res.status(200).send(data);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+CampaignHandler.getComments = async (req, res) => {
+  try {
+    const comment = req.params;
+    const data = await Campaign.getComments(comment);
     res.status(200).send(data);
   } catch (error) {
     res.status(500).send(error);
@@ -68,6 +78,16 @@ CampaignHandler.createPoll = async (req, res) => {
   try {
     const poll = req.body;
     const data = await Campaign.createPoll(poll);
+    res.status(200).send(data);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+CampaignHandler.createComment = async (req, res) => {
+  try {
+    const comment = req.body;
+    const data = await Campaign.createComment(comment);
     res.status(200).send(data);
   } catch (error) {
     res.status(500).send(error);

@@ -57,7 +57,7 @@ Campaign.getProgress = async (progress) => {
   });
 };
 
-Campaign.getOption = async (option) => {
+Campaign.getOptions = async (option) => {
   return new Promise((resolve, reject) => {
     db.query(
       `select optionName, count from PollOption where pollId = ${option.pollId}`,
@@ -66,6 +66,24 @@ Campaign.getOption = async (option) => {
           reject({
             status: false,
             msg: `Databse error while fetching options: ${error}`,
+          });
+        } else {
+          resolve({ status: true, result: result });
+        }
+      }
+    );
+  });
+};
+
+Campaign.getComments = async (option) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `select publicAddr, commentText, dateOfComment, isCreator from Comment where campaignAddr = '${option.campaignAddr}' order by dateOfComment desc`,
+      (error, result) => {
+        if (error) {
+          reject({
+            status: false,
+            msg: `Databse error while fetching comments: ${error}`,
           });
         } else {
           resolve({ status: true, result: result });
@@ -96,7 +114,6 @@ Campaign.createUser = async (user) => {
 
 Campaign.createProgress = async (progress) => {
   return new Promise((resolve, reject) => {
-    console.log(progress);
     db.query(
       `insert into Progress (campaignAddr, progressTitle, dateOfProgress, description) values 
       ('${progress.campaignAddr}', '${progress.progressTitle}', '${progress.dateOfProgress}', '${progress.description}')`,
@@ -150,6 +167,25 @@ Campaign.createPoll = async (poll) => {
               }
             }
           );
+        }
+      }
+    );
+  });
+};
+
+Campaign.createComment = async (comment) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `insert into Comment(campaignAddr, publicAddr, commentText, dateOfComment, isCreator)
+      values('${comment.campaignAddr}','${comment.publicAddr}','${comment.commentText}','${comment.dateOfComment}','${comment.isCreator}')`,
+      (error, result) => {
+        if (error) {
+          reject({
+            status: false,
+            msg: `Database error while creating comment: ${error}`,
+          });
+        } else {
+          resolve({ status: true, msg: "Comment added" });
         }
       }
     );

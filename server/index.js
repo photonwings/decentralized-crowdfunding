@@ -19,12 +19,14 @@ app.get("/", (req, res) => {
 app.get("/api/get-likes/:campaignAddr", CampaignHandler.getLikes);
 app.get("/api/get-user/:publicAddr", CampaignHandler.getUser);
 app.get("/api/get-progress/:campaignAddr", CampaignHandler.getProgress);
-app.get("/api/get-option/:pollId", CampaignHandler.getOption);
+app.get("/api/get-options/:pollId", CampaignHandler.getOptions);
+app.get("/api/get-comments/:campaignAddr", CampaignHandler.getComments);
 
 // Post request
 app.post("/api/create-user", CampaignHandler.createUser);
 app.post("/api/create-progress", CampaignHandler.createProgress);
 app.post("/api/create-poll", CampaignHandler.createPoll);
+app.post("/api/create-comment", CampaignHandler.createComment);
 
 // Post request
 app.put("/api/put-likes", CampaignHandler.putLikes);
