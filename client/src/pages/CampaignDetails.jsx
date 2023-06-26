@@ -14,7 +14,8 @@ import {
   PollingCard,
 } from "../components";
 import { calculateBarPercentage, daysLeft } from "../utils";
-import { close, pen, plus, send, thirdweb } from "../assets";
+// import { close, pen, plus, send, thirdweb } from "../assets";
+import * as assets from "../assets";
 import {
   tempDonation,
   tempComment,
@@ -35,6 +36,7 @@ const CampaignDetails = () => {
 
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(0);
+  const [owner, setOwner] = useState({});
 
   const remainingDays = daysLeft(state.deadline);
   const fetchDonators = async () => {
@@ -48,6 +50,7 @@ const CampaignDetails = () => {
       fetchDonators();
       fetchLikes();
       fetchIsLiked();
+      fetchUser(state.owner);
     }
   }, [contract, address]);
 
@@ -109,6 +112,14 @@ const CampaignDetails = () => {
       .catch((error) => console.log("Error while fetching likes", error));
   };
 
+  const fetchUser = async (addr) => {
+    axios
+      .get(`${BASE_URL}/get-user/${addr}`)
+      .then((response) => {
+        setOwner(response.data.result);
+      })
+      .catch((error) => console.log("Error while fetching likes", error));
+  };
   //! Pending implementation
   const handleClose = () => {};
   const nickName = "PhotonWings";
@@ -214,14 +225,14 @@ const CampaignDetails = () => {
               <div className="mt-[20px] flex flex-row items-center flex-wrap gap-[14px]">
                 <div className="w-[52px] h-[52px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">
                   <img
-                    src={thirdweb}
+                    src={assets[owner.icon]}
                     alt="user"
-                    className="w-[60%] h-[60%] object-contain"
+                    className="h-auto max-w-full rounded-full"
                   />
                 </div>
                 <div>
                   <h4 className="font-epilogue font-semibold text-[14px] text-white ">
-                    {nickName}
+                    {owner.nickName}
                   </h4>
                   <p className="mt-[4px] font-epilogue font-semibold text-[12px] text-[#808191]">
                     {`${state.owner.toString().slice(0, 5)}...${state.owner
@@ -282,7 +293,7 @@ const CampaignDetails = () => {
               </div>
               <SearchBar
                 placeholder="Add a comment..."
-                icon={send}
+                icon={assets.send}
                 style="bg-[#13131a] max-w-full"
               />
             </div>
@@ -310,14 +321,14 @@ const CampaignDetails = () => {
                   <div>
                     <SearchBar
                       placeholder="Add polling option..."
-                      icon={plus}
+                      icon={assets.plus}
                       style="bg-[#13131a] max-w-full"
                     />
                     <CustomButton
                       btnType="button"
                       title={
                         <img
-                          src={close}
+                          src={assets.close}
                           alt="close"
                           className="w-[30px] h-[30px] ml-auto mr-auto"
                         />
@@ -356,7 +367,7 @@ const CampaignDetails = () => {
                     />
                     <SearchBar
                       placeholder="Write the progress..."
-                      icon={pen}
+                      icon={assets.pen}
                       style="bg-[#13131a] max-w-full"
                     />
                   </div>

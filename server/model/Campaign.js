@@ -4,7 +4,6 @@ const Campaign = {};
 
 // Get request
 Campaign.getLikes = async (likes) => {
-  console.log(likes.campaignAddr);
   return new Promise((resolve, reject) => {
     db.query(
       `select likes from Campaign where campaignAddr = '${likes.campaignAddr}'`,
@@ -52,7 +51,7 @@ Campaign.getUser = async (user) => {
             msg: `Databse error while fetching User: ${error}`,
           });
         } else {
-          resolve({ status: true, result: result });
+          resolve({ status: true, result: result[0] });
         }
       }
     );
