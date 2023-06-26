@@ -41,6 +41,10 @@ contract CrowdFunding {
         return numberOfCampaigns - 1;
     }
 
+    function getIndex() public view returns (uint256) {
+        return (numberOfCampaigns - 1);
+    }
+
     function donateToCampaign(uint256 _id) public payable {
         uint256 amount = msg.value;
         Campaign storage campaign = campaigns[_id];

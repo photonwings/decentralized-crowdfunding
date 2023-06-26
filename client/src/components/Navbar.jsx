@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ConnectWallet } from "@thirdweb-dev/react";
 
 import { useStateContext } from "../context";
 import { CustomButton, SearchBar } from "./";
@@ -22,7 +23,7 @@ const Navbar = () => {
       />
       {/* Connect to wallet button and profile icon */}
       <div className="sm:flex hidden flex-row justify-end gap-4">
-        <CustomButton
+        {/* <CustomButton
           btnType="button"
           title={address ? "Create a campaign" : "Connect"}
           styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
@@ -30,7 +31,8 @@ const Navbar = () => {
             if (address) navigate("create-campaign");
             else connect();
           }}
-        />
+        /> */}
+        <ConnectWallet theme="dark" />
 
         <Link to="/profile">
           <div className="w-[52px] h-[52px] rounded-full bg-[#2c2f32] flex justify-center items-center cursor-pointer">

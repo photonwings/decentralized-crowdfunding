@@ -1,11 +1,14 @@
 client/node_modules/
 client/dist/
+client/.env
 
 server/node_modules/
 server/.env
 
 web3/node_modules/
 web3/.env
+web3/artifacts
+web3/cache
 
 /node_modules
 .vscode

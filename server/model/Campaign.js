@@ -4,6 +4,7 @@ const Campaign = {};
 
 // Get request
 Campaign.getLikes = async (likes) => {
+  console.log(likes.campaignAddr);
   return new Promise((resolve, reject) => {
     db.query(
       `select likes from Campaign where campaignAddr = '${likes.campaignAddr}'`,
@@ -14,7 +15,26 @@ Campaign.getLikes = async (likes) => {
             msg: `Databse error while fetching likes: ${error}`,
           });
         } else {
-          resolve({ status: true, result: result });
+          resolve({ status: true, result: result[0] });
+        }
+      }
+    );
+  });
+};
+
+Campaign.getIsLiked = async (likes) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `select isLiked from Likes where campaignAddr = '${likes.campaignAddr}' 
+      and publicAddr = '${likes.publicAddr}'`,
+      (error, result) => {
+        if (error) {
+          reject({
+            status: false,
+            msg: `Databse error while fetching likes: ${error}`,
+          });
+        } else {
+          resolve({ status: true, result: result[0] });
         }
       }
     );
@@ -106,6 +126,40 @@ Campaign.createUser = async (user) => {
           });
         } else {
           resolve({ status: true, msg: "New user created" });
+        }
+      }
+    );
+  });
+};
+
+Campaign.createCampaign = async (campaign) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `insert into Campaign (campaignAddr, publicAddr, likes) values('${campaign.campaignAddr}', '${campaign.publicAddr}', 0)`,
+      (error, result) => {
+        if (error) {
+          reject({
+            status: false,
+            msg: `Databse error while creating campaign: ${error}`,
+          });
+        } else {
+          db.query(
+            `insert into Likes(campaignAddr, publicAddr, isLiked) 
+            values('${campaign.campaignAddr}','${campaign.publicAddr}',0)`,
+            (error, result) => {
+              if (error) {
+                reject({
+                  status: false,
+                  msg: `Error while inserting likes: ${error}`,
+                });
+              } else {
+                resolve({
+                  status: true,
+                  msg: "New campaign and likes created",
+                });
+              }
+            }
+          );
         }
       }
     );
@@ -205,6 +259,25 @@ Campaign.putLikes = async (likes) => {
           });
         } else {
           resolve({ status: true, msg: "Likes updated" });
+        }
+      }
+    );
+  });
+};
+
+Campaign.putIsLiked = async (likes) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `update Likes set isLiked = ${likes.isLiked} where 
+      campaignAddr = '${likes.campaignAddr}' and publicAddr = '${likes.publicAddr}'`,
+      (error, result) => {
+        if (error) {
+          reject({
+            status: false,
+            msg: `Databse error while updating isLiked: ${error}`,
+          });
+        } else {
+          resolve({ status: true, msg: "IsLiked updated" });
         }
       }
     );

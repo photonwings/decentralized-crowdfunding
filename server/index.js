@@ -17,6 +17,10 @@ app.get("/", (req, res) => {
 
 // Get request
 app.get("/api/get-likes/:campaignAddr", CampaignHandler.getLikes);
+app.get(
+  "/api/get-is-liked/:campaignAddr/:publicAddr",
+  CampaignHandler.getIsLIked
+);
 app.get("/api/get-user/:publicAddr", CampaignHandler.getUser);
 app.get("/api/get-progress/:campaignAddr", CampaignHandler.getProgress);
 app.get("/api/get-options/:pollId", CampaignHandler.getOptions);
@@ -24,12 +28,14 @@ app.get("/api/get-comments/:campaignAddr", CampaignHandler.getComments);
 
 // Post request
 app.post("/api/create-user", CampaignHandler.createUser);
+app.post("/api/create-campaign", CampaignHandler.createCampaign);
 app.post("/api/create-progress", CampaignHandler.createProgress);
 app.post("/api/create-poll", CampaignHandler.createPoll);
 app.post("/api/create-comment", CampaignHandler.createComment);
 
-// Post request
+// Put request
 app.put("/api/put-likes", CampaignHandler.putLikes);
+app.put("/api/put-is-liked", CampaignHandler.putIsLiked);
 app.put("/api/put-option", CampaignHandler.putOptions);
 
 // Delete poll

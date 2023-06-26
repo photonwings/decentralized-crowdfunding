@@ -3,7 +3,6 @@ import React, { useContext, createContext } from "react";
 import {
   useAddress,
   useContract,
-  useMetamask,
   useContractWrite,
 } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
@@ -13,31 +12,39 @@ const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   const { contract } = useContract(
-    "0xd5E0228b71Ad7801Ca3ef29809AC7b9aa76dE796"
+    "0x9631B4fBCA48131d0e4F93696F75188E7AaAd042"
   );
+
   const { mutateAsync: createCampaign } = useContractWrite(
     contract,
     "createCampaign"
   );
 
   const address = useAddress();
-  const connect = useMetamask();
+  // const connect = useMetamask();
 
   const publishCampaign = async (form) => {
     try {
-      const data = await createCampaign([
-        address, // owner
-        form.title, // title
-        form.description, // description
-        form.target,
-        new Date(form.deadline).getTime(), // deadline,
-        form.image,
-      ]);
+      const result = await createCampaign({
+        args: [
+          address, // owner
+          form.title, // title
+          form.description, // description
+          form.target,
+          new Date(form.deadline).getTime(), // deadline,
+          form.image,
+        ],
+      });
 
-      console.log("contract call success", data);
+      console.log("contract call success", result);
     } catch (error) {
       console.log("contract call failure", error);
     }
+  };
+
+  const getIndex = async () => {
+    const index = await contract.call("getIndex");
+    return index;
   };
 
   const getCampaigns = async () => {
@@ -70,13 +77,13 @@ export const StateContextProvider = ({ children }) => {
   };
 
   const donate = async (pId, amount) => {
-    const data = await contract.call("donateToCampaign", pId, {
+    const data = await contract.call("donateToCampaign", [pId], {
       value: ethers.utils.parseEther(amount),
     });
     return data;
   };
   const getDonations = async (pId) => {
-    const donations = await contract.call("getDonators", pId);
+    const donations = await contract.call("getDonators", [pId]);
     const numberOfDonations = donations[0].length;
     const parsedDonations = [];
     for (let i = 0; i < numberOfDonations; i++) {
@@ -92,12 +99,12 @@ export const StateContextProvider = ({ children }) => {
       value={{
         address,
         contract,
-        connect,
         createCampaign: publishCampaign,
         getCampaigns,
         getUserCampaigns,
         donate,
         getDonations,
+        getIndex,
       }}
     >
       {children}

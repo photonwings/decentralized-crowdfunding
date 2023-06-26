@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
+import axios from "axios";
 
 import { useStateContext } from "../context";
 import { money } from "../assets";
@@ -8,9 +9,10 @@ import { CustomButton, FormField, Loader } from "../components";
 import { checkIfImage } from "../utils";
 
 const CreateCampaign = () => {
+  const BASE_URL = process.env.REACT_APP_BASEURL || "http://localhost:4001/api";
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { createCampaign } = useStateContext();
+  const { createCampaign, getIndex, address } = useStateContext();
   const [form, setForm] = useState({
     name: "",
     title: "",
@@ -34,6 +36,8 @@ const CreateCampaign = () => {
           ...form,
           target: ethers.utils.parseUnits(form.target, 18),
         });
+        const index = (await getIndex()).toString();
+        await handleCreateCampaign(index);
         setIsLoading(false);
         navigate("/");
       } else {
@@ -43,6 +47,15 @@ const CreateCampaign = () => {
     });
   };
 
+  const handleCreateCampaign = async (index) => {
+    axios
+      .post(`${BASE_URL}/create-campaign`, {
+        campaignAddr: index,
+        publicAddr: address,
+      })
+      .then((response) => console.log(response))
+      .catch((error) => console.log(error));
+  };
   return (
     <div className="bg-[#1c1c24] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4">
       {isLoading && <Loader />}

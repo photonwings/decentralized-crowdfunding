@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { ethers } from "ethers";
 
 import { useStateContext } from "../context";
@@ -26,23 +27,28 @@ const CampaignDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { donate, getDonations, contract, address } = useStateContext();
+  const BASE_URL = process.env.REACT_APP_BASEURL || "http://localhost:4001/api";
 
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const [donators, setDonators] = useState([]);
 
-  const remainingDays = daysLeft(state.deadline);
+  const [likes, setLikes] = useState(0);
+  const [isLiked, setIsLiked] = useState(0);
 
+  const remainingDays = daysLeft(state.deadline);
   const fetchDonators = async () => {
     const data = await getDonations(state.pId);
-
     setDonators(data);
-    // console.log(data);
     setDonators(tempDonation);
   };
 
   useEffect(() => {
-    if (contract) fetchDonators();
+    if (contract) {
+      fetchDonators();
+      fetchLikes();
+      fetchIsLiked();
+    }
   }, [contract, address]);
 
   const handleDonate = async () => {
@@ -51,17 +57,59 @@ const CampaignDetails = () => {
       return;
     }
     setIsLoading(true);
-
     await donate(state.pId, amount);
-
     navigate("/");
     setIsLoading(false);
   };
 
+  const handleLikes = async () => {
+    axios
+      .put(`${BASE_URL}/put-likes`, {
+        like: isLiked ? likes - 1 : likes + 1,
+        campaignAddr: state.pId,
+      })
+      .then((response) => {
+        console.log(response);
+        fetchLikes();
+        handleIsLiked();
+      })
+      .catch((error) => console.log("Error while posting like", error));
+  };
+
+  const handleIsLiked = async () => {
+    axios
+      .put(`${BASE_URL}/put-is-liked`, {
+        campaignAddr: state.pId,
+        publicAddr: address,
+        isLiked: isLiked ? 0 : 1,
+      })
+      .then((response) => {
+        console.log(response);
+        fetchLikes();
+        fetchIsLiked();
+      })
+      .catch((error) => console.log("Error while posting like", error));
+  };
+
+  const fetchLikes = async () => {
+    axios
+      .get(`${BASE_URL}/get-likes/${state.pId}`)
+      .then((response) => {
+        setLikes(response.data.result.likes);
+      })
+      .catch((error) => console.log("Error while fetching likes", error));
+  };
+
+  const fetchIsLiked = async () => {
+    axios
+      .get(`${BASE_URL}/get-is-liked/${state.pId}/${address}`)
+      .then((response) => {
+        setIsLiked(response.data.result.isLiked);
+      })
+      .catch((error) => console.log("Error while fetching likes", error));
+  };
+
   //! Pending implementation
-  let likes = 21;
-  let isLiked = true;
-  const handleLike = () => {};
   const handleClose = () => {};
   const nickName = "PhotonWings";
 
@@ -106,7 +154,7 @@ const CampaignDetails = () => {
             btnType="button"
             title={`${likes} Likes`}
             styles={`w-[150px] ${isLiked ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}`}
-            handleClick={handleLike}
+            handleClick={handleLikes}
           />
         </div>
         {/* Funding part */}
