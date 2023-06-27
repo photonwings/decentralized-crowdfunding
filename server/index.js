@@ -21,7 +21,7 @@ app.get(
   "/api/get-is-liked/:campaignAddr/:publicAddr",
   CampaignHandler.getIsLIked
 );
-app.get("/api/get-user/:publicAddr", CampaignHandler.getUser);
+app.get("/api/get-users", CampaignHandler.getUsers);
 app.get("/api/get-progress/:campaignAddr", CampaignHandler.getProgress);
 app.get("/api/get-options/:pollId", CampaignHandler.getOptions);
 app.get("/api/get-comments/:campaignAddr", CampaignHandler.getComments);

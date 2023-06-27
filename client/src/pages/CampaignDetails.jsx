@@ -29,6 +29,11 @@ const CampaignDetails = () => {
   const navigate = useNavigate();
   const { donate, getDonations, contract, address } = useStateContext();
   const BASE_URL = process.env.REACT_APP_BASEURL || "http://localhost:4001/api";
+  const User = Object.freeze({
+    Owner: "owner",
+    Donors: "donors",
+    Commenters: "commenters",
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState("");
@@ -36,13 +41,22 @@ const CampaignDetails = () => {
 
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(0);
-  const [owner, setOwner] = useState({});
+  const [ownerProfile, setOwnerProfile] = useState({});
+  const [commenterProfile, setCommenterProfile] = useState([]);
+  const [progress, setProgress] = useState([])
 
   const remainingDays = daysLeft(state.deadline);
   const fetchDonators = async () => {
-    const data = await getDonations(state.pId);
-    setDonators(data);
-    setDonators(tempDonation);
+    const donors = await getDonations(state.pId);
+    const profiles = await fetchUser(
+      User.Donors,
+      ...donors.map((donator) => donator.donator)
+    );
+    const donorProfile = donors.map((donor) => {
+      const profile = profiles.find((profile) => profile.publicAddr === donor.donator);
+      return { ...donor, ...profile };
+    });
+    setDonators(donorProfile);
   };
 
   useEffect(() => {
@@ -50,7 +64,8 @@ const CampaignDetails = () => {
       fetchDonators();
       fetchLikes();
       fetchIsLiked();
-      fetchUser(state.owner);
+      fetchUser(User.Owner, state.owner);
+      fetchProgress();
     }
   }, [contract, address]);
 
@@ -112,17 +127,34 @@ const CampaignDetails = () => {
       .catch((error) => console.log("Error while fetching likes", error));
   };
 
-  const fetchUser = async (addr) => {
-    axios
-      .get(`${BASE_URL}/get-user/${addr}`)
-      .then((response) => {
-        setOwner(response.data.result);
-      })
-      .catch((error) => console.log("Error while fetching likes", error));
+  const fetchUser = async (type, ...addr) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/get-users?publicAddr=${addr.join(",")}`
+      );
+      if (type === User.Owner) {
+        setOwnerProfile(response.data.result[0]);
+      } else if (type === User.Donors) {
+        return response.data.result;
+      } else if (type === User.Commenters) {
+        setCommenterProfile(response.data.result);
+      }
+    } catch (error) {
+      console.log("Error while fetching users", error);
+    }
   };
+  const fetchProgress = async () => {
+    axios
+    .get(`${BASE_URL}/get-progress/${state.pId}`)
+    .then((response) => {
+      console.log(response.data.result)
+      setProgress(response.data.result);
+    })
+    .catch((error) => console.log("Error while fetching likes", error));
+  }
+
   //! Pending implementation
   const handleClose = () => {};
-  const nickName = "PhotonWings";
 
   return (
     <div className="mb-10 ">
@@ -225,14 +257,14 @@ const CampaignDetails = () => {
               <div className="mt-[20px] flex flex-row items-center flex-wrap gap-[14px]">
                 <div className="w-[52px] h-[52px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">
                   <img
-                    src={assets[owner.icon]}
+                    src={assets[ownerProfile.icon]}
                     alt="user"
                     className="h-auto max-w-full rounded-full"
                   />
                 </div>
                 <div>
                   <h4 className="font-epilogue font-semibold text-[14px] text-white ">
-                    {owner.nickName}
+                    {ownerProfile.nickName}
                   </h4>
                   <p className="mt-[4px] font-epilogue font-semibold text-[12px] text-[#808191]">
                     {`${state.owner.toString().slice(0, 5)}...${state.owner
@@ -265,7 +297,7 @@ const CampaignDetails = () => {
               <div className="mt-[20px]  flex flex-col gap-4 overflow-auto h-[570px] overflow-x-hidden scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                 {donators.length > 0 ? (
                   donators.map((item, index) => (
-                    <DonatorCard key={index} item={item} index={index} />
+                    <DonatorCard key={index} item={item} />
                   ))
                 ) : (
                   <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
@@ -341,16 +373,16 @@ const CampaignDetails = () => {
               </div>
             )}
             {/* Prgress */}
-            {tempProgress.length > 0 && (
+            {progress.length > 0 && (
               <div className="w-full  bg-[#1c1c24] p-[20px] rounded-[10px]">
                 <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
                   Progress
                 </h4>
                 {/* <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px]"> */}
                 <div className="mt-[20px] mb-[10px] grid grid-flow-row  xl:grid-cols-2 gap-[10px] overflow-auto overflow-x-hidden h-[315px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
-                  {tempProgress.length > 0 ? (
-                    tempProgress.map((item, index) => (
-                      <ProgressCard key={index} item={item} index={index} />
+                  {progress.length > 0 ? (
+                    progress.map((item, index) => (
+                      <ProgressCard key={index} item={item} />
                     ))
                   ) : (
                     <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">

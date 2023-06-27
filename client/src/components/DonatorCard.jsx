@@ -1,17 +1,15 @@
 import React from "react";
-import { thirdweb } from "../assets";
+import * as assets from "../assets";
 
-const DonatorCard = ({ item, index }) => {
+const DonatorCard = ({ item }) => {
   return (
-    <div
-      className="flex justify-between items-center gap-5 bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-4 min-w-[300px]"
-    >
+    <div className="flex justify-between items-center gap-5 bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-4 min-w-[300px]">
       <div className="m-[10px] flex flex-row items-center flex-wrap gap-[10px]">
         <div className="w-[40px] h-[40px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">
           <img
-            src={thirdweb}
+            src={assets[item.icon]}
             alt="user"
-            className="w-[50%] h-[50%] object-contain"
+            className="h-auto max-w-full rounded-full"
           />
         </div>
         <div>

@@ -1,17 +1,16 @@
 import React from "react";
+import { calculateTime } from "../utils";
 
-const ProgressCard = ({ index, item }) => {
+const ProgressCard = ({ item }) => {
   return (
-    <div
-      className=" bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-4 "
-    >
+    <div className=" bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-4 ">
       <div className="m-[10px] flex flex-row items-center flex-wrap gap-[10px]">
         <div className="flex flex-col gap-[5px]">
           <h4 className="font-epilogue font-bold text-[16px] text-white ">
-            {item.title}
+            {item.progressTitle}
           </h4>
           <p className="mt-[4px] font-epilogue text-[14px] text-[#808191]">
-            {item.dateOfProgress}
+            {calculateTime(item.dateOfProgress)}
           </p>
         </div>
       </div>

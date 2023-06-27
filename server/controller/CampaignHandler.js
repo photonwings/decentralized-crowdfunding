@@ -23,10 +23,10 @@ CampaignHandler.getIsLIked = async (req, res) => {
   }
 };
 
-CampaignHandler.getUser = async (req, res) => {
+CampaignHandler.getUsers = async (req, res) => {
   try {
-    const user = req.params;
-    const data = await Campaign.getUser(user);
+    const user = req.query;
+    const data = await Campaign.getUsers(user);
     res.status(200).send(data);
   } catch (error) {
     res.status(500).send(error);

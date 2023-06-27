@@ -40,10 +40,13 @@ Campaign.getIsLiked = async (likes) => {
   });
 };
 
-Campaign.getUser = async (user) => {
+Campaign.getUsers = async (user) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `select * from User where publicAddr = '${user.publicAddr}'`,
+      `select * from User where publicAddr in (${user.publicAddr
+        .split(",")
+        .map((address) => `'${address.trim()}'`)
+        .join(",")})`,
       (error, result) => {
         if (error) {
           reject({
@@ -51,7 +54,7 @@ Campaign.getUser = async (user) => {
             msg: `Databse error while fetching User: ${error}`,
           });
         } else {
-          resolve({ status: true, result: result[0] });
+          resolve({ status: true, result: result });
         }
       }
     );
@@ -61,7 +64,7 @@ Campaign.getUser = async (user) => {
 Campaign.getProgress = async (progress) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `select * from Progress where campaignAddr = '${progress.campaignAddr}' order by dateOfProgress desc`,
+      `select progressTitle, dateOfProgress, description from Progress where campaignAddr = '${progress.campaignAddr}' order by dateOfProgress desc`,
       (error, result) => {
         if (error) {
           reject({
