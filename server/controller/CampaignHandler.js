@@ -43,10 +43,20 @@ CampaignHandler.getProgress = async (req, res) => {
   }
 };
 
+CampaignHandler.getQuestion = async (req, res) => {
+  try {
+    const question = req.params;
+    const data = await Campaign.getQuestion(question);
+    res.status(200).send(data);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 CampaignHandler.getOptions = async (req, res) => {
   try {
     const option = req.params;
-    const data = await Campaign.getOption(option);
+    const data = await Campaign.getOptions(option);
     res.status(200).send(data);
   } catch (error) {
     res.status(500).send(error);

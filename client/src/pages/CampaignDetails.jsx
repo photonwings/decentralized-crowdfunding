@@ -42,8 +42,12 @@ const CampaignDetails = () => {
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(0);
   const [ownerProfile, setOwnerProfile] = useState({});
-  const [commenterProfile, setCommenterProfile] = useState([]);
-  const [progress, setProgress] = useState([])
+  const [comments, setComments] = useState([]);
+  const [progress, setProgress] = useState([]);
+  const [poll, setPoll] = useState({
+    question: "No active poll",
+    options: [],
+  });
 
   const remainingDays = daysLeft(state.deadline);
   const fetchDonators = async () => {
@@ -53,7 +57,9 @@ const CampaignDetails = () => {
       ...donors.map((donator) => donator.donator)
     );
     const donorProfile = donors.map((donor) => {
-      const profile = profiles.find((profile) => profile.publicAddr === donor.donator);
+      const profile = profiles.find(
+        (profile) => profile.publicAddr === donor.donator
+      );
       return { ...donor, ...profile };
     });
     setDonators(donorProfile);
@@ -66,6 +72,8 @@ const CampaignDetails = () => {
       fetchIsLiked();
       fetchUser(User.Owner, state.owner);
       fetchProgress();
+      fetchComment();
+      fetchPoll();
     }
   }, [contract, address]);
 
@@ -137,7 +145,7 @@ const CampaignDetails = () => {
       } else if (type === User.Donors) {
         return response.data.result;
       } else if (type === User.Commenters) {
-        setCommenterProfile(response.data.result);
+        return response.data.result;
       }
     } catch (error) {
       console.log("Error while fetching users", error);
@@ -145,13 +153,46 @@ const CampaignDetails = () => {
   };
   const fetchProgress = async () => {
     axios
-    .get(`${BASE_URL}/get-progress/${state.pId}`)
-    .then((response) => {
-      console.log(response.data.result)
-      setProgress(response.data.result);
-    })
-    .catch((error) => console.log("Error while fetching likes", error));
-  }
+      .get(`${BASE_URL}/get-progress/${state.pId}`)
+      .then((response) => {
+        setProgress(response.data.result);
+      })
+      .catch((error) => console.log("Error while fetching likes", error));
+  };
+  const fetchComment = async () => {
+    try {
+      const comments = await axios.get(`${BASE_URL}/get-comments/${state.pId}`);
+      const profiles = await fetchUser(
+        User.Commenters,
+        ...comments.data.result.map((comment) => comment.publicAddr)
+      );
+      const commenterProfile = comments.data.result.map((comment) => {
+        const profile = profiles.find(
+          (profile) => profile.publicAddr === comment.publicAddr
+        );
+        return { ...comment, ...profile };
+      });
+      setComments(commenterProfile);
+    } catch (error) {
+      console.log("Error while fetching comments and/or profile: ", error);
+    }
+  };
+
+  const fetchPoll = async () => {
+    let questionOptions = {
+      question: "No active poll",
+      options: [],
+    };
+    const question = await axios.get(`${BASE_URL}/get-question/${state.pId}`);
+    if (question.data.result.length === 1) {
+      const options = await axios.get(`${BASE_URL}/get-options/${state.pId}`);
+      questionOptions = {
+        question: question.data.result[0].question,
+        options: options.data.result,
+      };
+    }
+    setPoll(questionOptions);
+  };
 
   //! Pending implementation
   const handleClose = () => {};
@@ -245,7 +286,7 @@ const CampaignDetails = () => {
       </div>
       {/* Bottom section: Creator, description and donors */}
       <div className="mt-[40px] flex lg:flex-row flex-col gap-5">
-        <div className="flex flex-col gap-[40px]">
+        <div className="flex flex-col gap-[40px] w-full">
           {/* Creator and description*/}
           <div className="flex md:flex-row flex-col justify-between gap-[20px]">
             {/* Creator */}
@@ -308,14 +349,18 @@ const CampaignDetails = () => {
             </div>
             {/* Comments */}
             <div className="w-full bg-[#1c1c24] p-[20px] rounded-[10px]">
-              <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+              <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase mb-[20px]">
                 Comments
               </h4>
-
+              <SearchBar
+                placeholder="Add a comment..."
+                icon={assets.send}
+                style="bg-[#13131a] max-w-full"
+              />
               <div className="mt-[20px] mb-[20px] flex flex-col gap-4 overflow-auto h-[500px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
-                {tempComment.length > 0 ? (
-                  tempComment.map((item, index) => (
-                    <CommentCard key={index} item={item} index={index} />
+                {comments.length > 0 ? (
+                  comments.map((item, index) => (
+                    <CommentCard key={index} item={item} />
                   ))
                 ) : (
                   <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
@@ -323,33 +368,34 @@ const CampaignDetails = () => {
                   </p>
                 )}
               </div>
-              <SearchBar
-                placeholder="Add a comment..."
-                icon={assets.send}
-                style="bg-[#13131a] max-w-full"
-              />
             </div>
           </div>
           {/* Polling and Updates */}
-          <div className="flex lg:flex-row flex-col justify-between gap-[20px]">
+          <div className="flex lg:flex-row flex-col justify-between gap-[20px] ">
             {/* Polling */}
-            {tempPoll.length > 0 && (
-              <div className="bg-[#1c1c24] p-[20px] rounded-[10px]">
-                <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
-                  Poll
-                </h4>
-                <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
-                  {tempPoll.length > 0 ? (
-                    tempPoll.map((item, index) => (
-                      <PollingCard key={index} item={item} index={index} />
-                    ))
-                  ) : (
-                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
-                      No current poll...
+            <div>
+              {poll.options.length > 0 && (
+                <div className="bg-[#1c1c24] p-[20px] rounded-[10px]">
+                  <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+                    Poll
+                  </h4>
+                  <div className="px-5 py-2 bg-[#28282e] rounded-[10px]">
+                    <p className="font-epilogue font-semibold text-[14px] text-white">
+                      {poll.question}
                     </p>
-                  )}
+                  </div>
+                  <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[325px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
+                    {poll.options.map((item, index) => (
+                      <PollingCard key={index} item={item} />
+                    ))}
+                  </div>
                 </div>
-                {state.isOwner && (
+              )}
+              {state.isOwner && (
+                <div className="bg-[#1c1c24] p-[20px] rounded-[10px] mt-[10px] ">
+                  <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase mb-[10px] ">
+                    Poll
+                  </h4>
                   <div>
                     <SearchBar
                       placeholder="Add polling option..."
@@ -369,17 +415,17 @@ const CampaignDetails = () => {
                       handleClick={handleClose}
                     />
                   </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
             {/* Prgress */}
             {progress.length > 0 && (
-              <div className="w-full  bg-[#1c1c24] p-[20px] rounded-[10px]">
+              <div className="w-full  bg-[#1c1c24] p-[20px] rounded-[10px] flex flex-col justify-evenly">
                 <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
                   Progress
                 </h4>
                 {/* <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px]"> */}
-                <div className="mt-[20px] mb-[10px] grid grid-flow-row  xl:grid-cols-2 gap-[10px] overflow-auto overflow-x-hidden h-[315px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
+                <div className="mt-[20px] mb-[10px] grid grid-flow-row  xl:grid-cols-2 gap-[10px] overflow-auto overflow-x-hidden h-[357px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                   {progress.length > 0 ? (
                     progress.map((item, index) => (
                       <ProgressCard key={index} item={item} />
@@ -394,7 +440,7 @@ const CampaignDetails = () => {
                   <div>
                     <SearchBar
                       placeholder="Write title to progress card..."
-                      style="bg-[#13131a] max-w-full mb-[10px]"
+                      style="bg-[#13131a] w-full mb-[10px]"
                       isButtonHidden={true}
                     />
                     <SearchBar

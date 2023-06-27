@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ConnectWallet } from "@thirdweb-dev/react";
 
+import axios from "axios";
 import { useStateContext } from "../context";
 import { CustomButton, SearchBar } from "./";
-import { logo, menu, search, thirdweb } from "../assets";
+import * as assets from "../assets";
 import { navlinks } from "../constants";
 
 const Navbar = () => {
@@ -12,35 +13,66 @@ const Navbar = () => {
   const [isActive, setIsActive] = useState("dashboard");
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const { connect, address } = useStateContext();
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  const [user, setUser] = useState({
+    publicAddr: "",
+    nickName: "Connect wallet",
+    icon: "tempUser",
+  });
 
+  const BASE_URL = process.env.REACT_APP_BASEURL || "http://localhost:4001/api";
+
+  useEffect(() => {
+    fetchUser();
+  }, [address]);
+
+  const fetchUser = async () => {
+    if (address) {
+      axios
+        .get(`${BASE_URL}/get-users?publicAddr=${address}`)
+        .then((response) => {
+          setUser(response.data.result[0]);
+          // console.log(response.data.result[0]);
+        })
+        .catch((error) => console.log("Error while fetching likes", error));
+    } else {
+      setUser({
+        publicAddr: "",
+        nickName: "Connet Wallet",
+        icon: "tempUser",
+      });
+    }
+  };
   return (
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
       {/* whole searchbar container */}
       <SearchBar
         placeholder="Search Campaign"
-        icon={search}
+        icon={assets.search}
         style="bg-[#1c1c24]"
       />
       {/* Connect to wallet button and profile icon */}
       <div className="sm:flex hidden flex-row justify-end gap-4">
-        {/* <CustomButton
-          btnType="button"
-          title={address ? "Create a campaign" : "Connect"}
-          styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
-          handleClick={() => {
-            if (address) navigate("create-campaign");
-            else connect();
-          }}
-        /> */}
         <ConnectWallet theme="dark" />
 
         <Link to="/profile">
-          <div className="w-[52px] h-[52px] rounded-full bg-[#2c2f32] flex justify-center items-center cursor-pointer">
-            <img
-              src={thirdweb}
-              alt="user"
-              className="w-[60%] h-[60%] object-contain"
-            />
+          <div className="relative">
+            <div
+              className="w-[52px] h-[52px] rounded-full bg-[#2c2f32] flex justify-center items-center cursor-pointer"
+              onMouseEnter={() => setIsTooltipVisible(true)}
+              onMouseLeave={() => setIsTooltipVisible(false)}
+            >
+              <img
+                src={assets[user.icon]}
+                alt="user"
+                className="h-auto max-w-full rounded-full"
+              />
+              {isTooltipVisible && (
+                <div className="absolute z-10 p-2 bg-[#1c1c24] text-white rounded-md  ">
+                  {user.nickName}
+                </div>
+              )}
+            </div>
           </div>
         </Link>
       </div>
@@ -48,16 +80,16 @@ const Navbar = () => {
       {/* Small screen navigation */}
       <div className="sm:hidden flex justify-between items-center relative">
         {/* Homepage logo */}
-        <div className="w-[40px] h-[40px] rounded-[10px] bg-[#2c2f32] flex justify-center items-center cursor-pointer">
+        <div className="w-[40px] h-[40px] rounded-[10px] bg-black flex justify-center items-center cursor-pointer">
           <img
-            src={logo}
+            src={assets.logoImage2}
             alt="user"
             className="w-[60%] h-[60%] object-contain"
           />
         </div>
         {/* Hamburger menu logo */}
         <img
-          src={menu}
+          src={assets.menu}
           alt="menu"
           className="w-[34px] h-[34px] object-contain cursor-pointer"
           onClick={() => setToggleDrawer((prev) => !prev)}
@@ -100,15 +132,7 @@ const Navbar = () => {
           </ul>
 
           <div className="flex mx-4">
-            <CustomButton
-              btnType="button"
-              title={address ? "Create a campaign" : "Connect"}
-              styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
-              handleClick={() => {
-                if (address) navigate("create-campaign");
-                else connect();
-              }}
-            />
+            <ConnectWallet theme="dark" />
           </div>
         </div>
       </div>

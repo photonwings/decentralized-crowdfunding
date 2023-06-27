@@ -23,7 +23,8 @@ app.get(
 );
 app.get("/api/get-users", CampaignHandler.getUsers);
 app.get("/api/get-progress/:campaignAddr", CampaignHandler.getProgress);
-app.get("/api/get-options/:pollId", CampaignHandler.getOptions);
+app.get("/api/get-question/:campaignAddr", CampaignHandler.getQuestion);
+app.get("/api/get-options/:campaignAddr", CampaignHandler.getOptions);
 app.get("/api/get-comments/:campaignAddr", CampaignHandler.getComments);
 
 // Post request

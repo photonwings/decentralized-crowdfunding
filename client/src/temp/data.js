@@ -206,6 +206,10 @@ export const tempPoll = [
     name: "JavaScript",
     percentage: 40,
   },
+  {
+    name: "Solidity",
+    percentage: 30,
+  },
 ];
 
 export const tempProgress = [

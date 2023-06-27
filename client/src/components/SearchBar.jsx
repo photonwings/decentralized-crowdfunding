@@ -3,7 +3,7 @@ import { search } from "../assets";
 const SearchBar = ({ placeholder, icon, style, isButtonHidden }) => {
   return (
     <div
-      className={`lg:flex-1 flex flex-row max-w-[458px] py-2 pl-4 pr-4 h-[52px]  rounded-[100px] ${style}`}
+      className={`lg:flex-1 flex flex-row  py-2 pl-4 pr-4 h-[52px]  rounded-[100px] ${style}`}
     >
       {/* search input text box */}
       <input

@@ -14,9 +14,11 @@ import loader from "./loader.svg";
 import thirdweb from "./thirdweb.png";
 import send from "./send.svg";
 import logoImage from "./fundbits-high-resolution-logo-color-on-transparent-background.png";
+import logoImage2 from "./fundbits-high-resolution-logo-white-on-transparent-background.svg";
 import pen from "./pen.svg";
 import plus from "./plus.svg";
 import close from "./close.svg";
+import tempUser from "./tempUser.svg";
 import profile1 from "./profile1.png";
 import profile2 from "./profile2.png";
 import profile3 from "./profile3.png";
@@ -55,9 +57,11 @@ export {
   thirdweb,
   send,
   logoImage,
+  logoImage2,
   pen,
   plus,
   close,
+  tempUser,
   profile1,
   profile2,
   profile3,

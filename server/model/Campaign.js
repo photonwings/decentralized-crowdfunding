@@ -79,10 +79,28 @@ Campaign.getProgress = async (progress) => {
   });
 };
 
+Campaign.getQuestion = async (question) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `select question from Poll where campaignAddr = ${question.campaignAddr}`,
+      (error, result) => {
+        if (error) {
+          reject({
+            status: false,
+            msg: `Databse error while fetching options: ${error}`,
+          });
+        } else {
+          resolve({ status: true, result: result });
+        }
+      }
+    );
+  });
+};
+
 Campaign.getOptions = async (option) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `select optionName, count from PollOption where pollId = ${option.pollId}`,
+      `select optionName, count from PollOption where campaignAddr = ${option.campaignAddr}`,
       (error, result) => {
         if (error) {
           reject({
