@@ -13,6 +13,7 @@ import {
   SearchBar,
   PollingCard,
   FormField,
+  Pill,
 } from "../components";
 import { calculateBarPercentage, daysLeft } from "../utils";
 // import { close, pen, plus, send, thirdweb } from "../assets";
@@ -54,6 +55,8 @@ const CampaignDetails = () => {
     question: "No active poll",
     options: [],
   });
+  const [question, setQuestion] = useState("");
+  const [options, setOptions] = useState([]);
   const [pollSum, setPollSum] = useState(0);
 
   const remainingDays = daysLeft(state.deadline);
@@ -227,7 +230,7 @@ const CampaignDetails = () => {
       })
       .catch((error) => console.log("Error while createing comment: ", error));
   };
-  const handleFormFieldChange = (fieldName, e) => {
+  const handleProgressFormChange = (fieldName, e) => {
     setCurrentProgress({ ...currentProgress, [fieldName]: e.target.value });
   };
 
@@ -263,8 +266,18 @@ const CampaignDetails = () => {
         );
     }
   };
-  //! Pending implementation
-  const handleClose = () => {};
+  const handleAddOption = (option) => {
+    console.log(option);
+    setOptions((prev) => [...prev, option]);
+  };
+  const handlePollSubmit = () => {};
+  const handlePollClear = () => {};
+  const deleteOption = (index) => {
+    setOptions((prev) => {
+      const updatedOptions = prev.filter((_, i) => i !== index);
+      return updatedOptions;
+    });
+  };
 
   return (
     <div className="mb-10 ">
@@ -472,10 +485,47 @@ const CampaignDetails = () => {
                     Edit Poll
                   </h4>
                   <div>
+                    <FormField
+                      labelName="Poll Question *"
+                      placeholder="Enter Poll Question"
+                      inputType="text"
+                      value={question}
+                      handleChange={(e) => setQuestion(e.target.value)}
+                    />
+                    <span className="font-epilogue font-medium text-[14px] leading-[22px] text-[#808191] mb-[10px]">
+                      Options *
+                    </span>
+                    <div className="py-3 px-1 my-[10px] text-center bg-[#1c1c24] border-[#3a3a43] border-[1px] rounded-[10px] h-[60px] overflow-auto scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
+                      {options.length > 0 ? (
+                        options.map((item, index) => (
+                          <Pill
+                            key={index}
+                            index={index}
+                            option={item}
+                            handleDelete={deleteOption}
+                          />
+                        ))
+                      ) : (
+                        <Pill option={"No options yet..."} />
+                      )}
+                    </div>
                     <SearchBar
                       placeholder="Add polling option..."
                       icon={assets.plus}
                       style="bg-[#13131a] max-w-full"
+                      handleSubmit={handleAddOption}
+                    />
+                    <CustomButton
+                      btnType="button"
+                      title={
+                        <img
+                          src={assets.check}
+                          alt="close"
+                          className="w-[30px] h-[30px] ml-auto mr-auto"
+                        />
+                      }
+                      styles={"bg-[#1dc071] mt-[10px]  w-full mr-auto ml-auto"}
+                      handleClick={handlePollSubmit}
                     />
                     <CustomButton
                       btnType="button"
@@ -487,7 +537,7 @@ const CampaignDetails = () => {
                         />
                       }
                       styles={"bg-red-600 mt-[10px] w-full"}
-                      handleClick={handleClose}
+                      handleClick={handlePollClear}
                     />
                   </div>
                 </div>
@@ -521,14 +571,13 @@ const CampaignDetails = () => {
                   <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase mb-[10px]">
                     Update Progress
                   </h4>
-
                   <FormField
                     labelName="Progress Title *"
                     placeholder="Enter Progress Title"
                     inputType="text"
                     value={currentProgress.progressTitle}
                     handleChange={(e) =>
-                      handleFormFieldChange("progressTitle", e)
+                      handleProgressFormChange("progressTitle", e)
                     }
                   />
                   <FormField
@@ -537,7 +586,7 @@ const CampaignDetails = () => {
                     inputType="text"
                     value={currentProgress.description}
                     handleChange={(e) =>
-                      handleFormFieldChange("description", e)
+                      handleProgressFormChange("description", e)
                     }
                   />
                   <CustomButton
