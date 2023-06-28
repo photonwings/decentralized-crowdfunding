@@ -17,7 +17,7 @@ const FundCard = ({
   const remainingDays = daysLeft(deadline);
   const [ownerProfile, setOwnerProfile] = useState({});
 
-  const BASE_URL = process.env.REACT_APP_BASEURL || "http://localhost:4001/api";
+  const BASE_URL = import.meta.env.VITE_BASEURL;
 
   useEffect(() => {
     fetchOwner();

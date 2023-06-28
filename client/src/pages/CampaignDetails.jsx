@@ -12,6 +12,7 @@ import {
   CommentCard,
   SearchBar,
   PollingCard,
+  FormField,
 } from "../components";
 import { calculateBarPercentage, daysLeft } from "../utils";
 // import { close, pen, plus, send, thirdweb } from "../assets";
@@ -29,7 +30,7 @@ const CampaignDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { donate, getDonations, contract, address } = useStateContext();
-  const BASE_URL = process.env.REACT_APP_BASEURL || "http://localhost:4001/api";
+  const BASE_URL = import.meta.env.VITE_BASEURL;
   const User = Object.freeze({
     Owner: "owner",
     Donors: "donors",
@@ -45,6 +46,10 @@ const CampaignDetails = () => {
   const [ownerProfile, setOwnerProfile] = useState({});
   const [comments, setComments] = useState([]);
   const [progress, setProgress] = useState([]);
+  const [currentProgress, setCurrentProgress] = useState({
+    progressTitle: "",
+    description: "",
+  });
   const [poll, setPoll] = useState({
     question: "No active poll",
     options: [],
@@ -209,18 +214,54 @@ const CampaignDetails = () => {
         campaignAddr: state.pId,
         publicAddr: address,
         commentText: comment,
+        isCreator: state.owner === address ? 1 : 0,
         dateOfComment: new Date(
           Date.now() + 5 * 60 * 60 * 1000 + 30 * 60 * 1000
         )
           .toISOString()
           .slice(0, 19)
           .replace("T", " "),
-        isCreator: state.owner === address ? 1 : 0,
       })
       .then((response) => {
         fetchComment();
       })
       .catch((error) => console.log("Error while createing comment: ", error));
+  };
+  const handleFormFieldChange = (fieldName, e) => {
+    setCurrentProgress({ ...currentProgress, [fieldName]: e.target.value });
+  };
+
+  const handleProgressSubmit = () => {
+    if (
+      currentProgress.progressTitle === "" ||
+      currentProgress.description === ""
+    ) {
+      alert("Enter Title and Description");
+      return;
+    } else {
+      axios
+        .post(`${BASE_URL}/create-progress`, {
+          campaignAddr: state.pId,
+          progressTitle: currentProgress.progressTitle,
+          description: currentProgress.description,
+          dateOfProgress: new Date(
+            Date.now() + 5 * 60 * 60 * 1000 + 30 * 60 * 1000
+          )
+            .toISOString()
+            .slice(0, 19)
+            .replace("T", " "),
+        })
+        .then((response) => {
+          setCurrentProgress({
+            progressTitle: "",
+            description: "",
+          });
+          fetchProgress();
+        })
+        .catch((error) =>
+          console.log("Error while createing progress: ", error)
+        );
+    }
   };
   //! Pending implementation
   const handleClose = () => {};
@@ -358,7 +399,7 @@ const CampaignDetails = () => {
           </div>
           {/* Donor list and comment*/}
           <div className="flex lg:flex-row flex-col justify-between gap-[10px]">
-            <div className="bg-[#1c1c24] p-[20px] rounded-[10px] lg:w-[580px]">
+            <div className="bg-[#1c1c24] p-[20px] rounded-[10px] lg:w-[533px]">
               <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
                 Donators
               </h4>
@@ -400,19 +441,20 @@ const CampaignDetails = () => {
             </div>
           </div>
           {/* Polling and Updates */}
-          <div className="flex lg:flex-row flex-col justify-between  ">
+          <div className="flex lg:flex-row flex-col justify-between gap-[10px] ">
             {/* Polling */}
             <div className="lg:w-[400px]">
               {poll.options.length > 0 && (
-                <div className="bg-[#1c1c24] p-[20px] rounded-[10px]">
+                <div className="bg-[#1c1c24] p-[20px] rounded-[10px] min-h-[500px]">
                   <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
                     Poll
                   </h4>
-                  <div className="px-5 py-2 bg-[#28282e] rounded-[10px]">
-                    <p className="font-epilogue font-semibold text-[14px] text-white">
+                  <div className="px-2 py-2  bg-[#28282e] rounded-[10px] h-[75px] overflow-auto scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
+                    <p className="font-epilogue font-semibold text-[15px] text-white ">
                       {poll.question}
                     </p>
                   </div>
+
                   <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[325px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                     {poll.options.map((item, index) => (
                       <PollingCard
@@ -454,13 +496,13 @@ const CampaignDetails = () => {
             {/* Prgress */}
             <div>
               {progress.length > 0 && (
-                <div className="w-full  bg-[#1c1c24] p-[20px] rounded-[10px] flex flex-col justify-evenly">
+                <div className="w-full min-h-[500px] bg-[#1c1c24] p-[20px] rounded-[10px] flex flex-col justify-evenly">
                   <div>
                     <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
                       Progress
                     </h4>
                     {/* <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px]"> */}
-                    <div className="mt-[20px] mb-[10px] grid grid-flow-row  xl:grid-cols-2 gap-[10px] overflow-auto overflow-x-hidden h-[357px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
+                    <div className="mt-[20px] mb-[10px] grid grid-flow-row  xl:grid-cols-2 gap-[10px] overflow-auto overflow-x-hidden h-[400px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                       {progress.length > 0 ? (
                         progress.map((item, index) => (
                           <ProgressCard key={index} item={item} />
@@ -479,15 +521,38 @@ const CampaignDetails = () => {
                   <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase mb-[10px]">
                     Update Progress
                   </h4>
-                  <SearchBar
-                    placeholder="Write title to progress card..."
-                    style="bg-[#13131a] w-full mb-[10px]"
-                    isButtonHidden={true}
+
+                  <FormField
+                    labelName="Progress Title *"
+                    placeholder="Enter Progress Title"
+                    inputType="text"
+                    value={currentProgress.progressTitle}
+                    handleChange={(e) =>
+                      handleFormFieldChange("progressTitle", e)
+                    }
                   />
-                  <SearchBar
-                    placeholder="Write the progress..."
-                    icon={assets.pen}
-                    style="bg-[#13131a] max-w-full mb-[10px]"
+                  <FormField
+                    labelName="Progress Description *"
+                    placeholder="Enter Progress Description"
+                    inputType="text"
+                    value={currentProgress.description}
+                    handleChange={(e) =>
+                      handleFormFieldChange("description", e)
+                    }
+                  />
+                  <CustomButton
+                    btnType="button"
+                    title={
+                      <img
+                        src={assets.check}
+                        alt="close"
+                        className="w-[30px] h-[30px] ml-auto mr-auto"
+                      />
+                    }
+                    styles={
+                      "bg-[#1dc071] mt-[10px] lg:w-[300px] w-full mr-auto ml-auto"
+                    }
+                    handleClick={handleProgressSubmit}
                   />
                 </div>
               )}

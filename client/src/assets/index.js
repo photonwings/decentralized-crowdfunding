@@ -18,6 +18,7 @@ import logoImage2 from "./fundbits-high-resolution-logo-white-on-transparent-bac
 import pen from "./pen.svg";
 import plus from "./plus.svg";
 import close from "./close.svg";
+import check from "./check.svg";
 import tempUser from "./tempUser.svg";
 import profile1 from "./profile1.png";
 import profile2 from "./profile2.png";
@@ -61,6 +62,7 @@ export {
   pen,
   plus,
   close,
+  check,
   tempUser,
   profile1,
   profile2,
