@@ -1,10 +1,9 @@
 import React from "react";
+import { calculatePercentage } from "../utils";
 
-const PollingCard = ({ item }) => {
+const PollingCard = ({ item, pollSummary }) => {
   return (
-    <div
-      className="flex justify-between items-center gap-[100px] bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-2 min-w-[320px] "
-    >
+    <div className="flex justify-between items-center gap-[100px] bg-[#13131a] p-[10px] rounded-[10px] px-4 mr-2 min-w-[320px] ">
       <div className="m-[10px] flex flex-row items-center flex-wrap gap-[10px]">
         <div className="">
           <input
@@ -23,7 +22,7 @@ const PollingCard = ({ item }) => {
         </div>
       </div>
       <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] break-ll">
-        {item.percentage}%
+        {calculatePercentage(item.count, pollSummary)} %
       </p>
     </div>
   );

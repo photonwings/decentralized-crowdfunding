@@ -23,6 +23,7 @@ import {
   tempProgress,
 } from "../temp/data";
 import ProgressCard from "../components/ProgressCard";
+import { setSupportedChains } from "@thirdweb-dev/sdk";
 
 const CampaignDetails = () => {
   const { state } = useLocation();
@@ -48,6 +49,7 @@ const CampaignDetails = () => {
     question: "No active poll",
     options: [],
   });
+  const [pollSum, setPollSum] = useState(0);
 
   const remainingDays = daysLeft(state.deadline);
   const fetchDonators = async () => {
@@ -127,12 +129,14 @@ const CampaignDetails = () => {
   };
 
   const fetchIsLiked = async () => {
-    axios
-      .get(`${BASE_URL}/get-is-liked/${state.pId}/${address}`)
-      .then((response) => {
-        setIsLiked(response.data.result.isLiked);
-      })
-      .catch((error) => console.log("Error while fetching likes", error));
+    if (address) {
+      axios
+        .get(`${BASE_URL}/get-is-liked/${state.pId}/${address}`)
+        .then((response) => {
+          setIsLiked(response.data.result.isLiked);
+        })
+        .catch((error) => console.log("Error while fetching isLiked", error));
+    }
   };
 
   const fetchUser = async (type, ...addr) => {
@@ -190,8 +194,15 @@ const CampaignDetails = () => {
         question: question.data.result[0].question,
         options: options.data.result,
       };
+      setPoll(questionOptions);
+      calculatePoll(questionOptions);
     }
-    setPoll(questionOptions);
+  };
+
+  const calculatePoll = (poll) => {
+    const pollOptions = poll.options;
+    const sum = pollOptions.reduce((total, option) => total + option.count, 0);
+    setPollSum(sum);
   };
 
   //! Pending implementation
@@ -386,7 +397,11 @@ const CampaignDetails = () => {
                   </div>
                   <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[325px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                     {poll.options.map((item, index) => (
-                      <PollingCard key={index} item={item} />
+                      <PollingCard
+                        key={index}
+                        item={item}
+                        pollSummary={pollSum}
+                      />
                     ))}
                   </div>
                 </div>

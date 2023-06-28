@@ -49,3 +49,10 @@ export const calculateTime = (commentDate) => {
     return years === 1 ? "1 year ago" : years + " years ago";
   }
 };
+
+export const calculatePercentage = (count, pollSum) => {
+  if (pollSum === 0) {
+    return 0;
+  }
+  return Math.round((count / pollSum) * 100);
+};
