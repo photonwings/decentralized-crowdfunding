@@ -357,8 +357,8 @@ const CampaignDetails = () => {
             </div>
           </div>
           {/* Donor list and comment*/}
-          <div className="flex lg:flex-row flex-col justify-between gap-[20px]">
-            <div className="bg-[#1c1c24] p-[20px] rounded-[10px]">
+          <div className="flex lg:flex-row flex-col justify-between gap-[10px]">
+            <div className="bg-[#1c1c24] p-[20px] rounded-[10px] lg:w-[580px]">
               <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
                 Donators
               </h4>
@@ -400,9 +400,9 @@ const CampaignDetails = () => {
             </div>
           </div>
           {/* Polling and Updates */}
-          <div className="flex lg:flex-row flex-col justify-between gap-[20px] ">
+          <div className="flex lg:flex-row flex-col justify-between  ">
             {/* Polling */}
-            <div>
+            <div className="lg:w-[400px]">
               {poll.options.length > 0 && (
                 <div className="bg-[#1c1c24] p-[20px] rounded-[10px]">
                   <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
@@ -425,9 +425,9 @@ const CampaignDetails = () => {
                 </div>
               )}
               {state.isOwner && (
-                <div className="bg-[#1c1c24] p-[20px] rounded-[10px] mt-[10px] ">
+                <div className="bg-[#1c1c24] p-[20px] rounded-[10px] mt-[10px] min-h-[200px]">
                   <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase mb-[10px] ">
-                    Poll
+                    Edit Poll
                   </h4>
                   <div>
                     <SearchBar
@@ -452,39 +452,46 @@ const CampaignDetails = () => {
               )}
             </div>
             {/* Prgress */}
-            {progress.length > 0 && (
-              <div className="w-full  bg-[#1c1c24] p-[20px] rounded-[10px] flex flex-col justify-evenly">
-                <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
-                  Progress
-                </h4>
-                {/* <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px]"> */}
-                <div className="mt-[20px] mb-[10px] grid grid-flow-row  xl:grid-cols-2 gap-[10px] overflow-auto overflow-x-hidden h-[357px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
-                  {progress.length > 0 ? (
-                    progress.map((item, index) => (
-                      <ProgressCard key={index} item={item} />
-                    ))
-                  ) : (
-                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
-                      No progress update yet...
-                    </p>
-                  )}
-                </div>
-                {state.isOwner && (
+            <div>
+              {progress.length > 0 && (
+                <div className="w-full  bg-[#1c1c24] p-[20px] rounded-[10px] flex flex-col justify-evenly">
                   <div>
-                    <SearchBar
-                      placeholder="Write title to progress card..."
-                      style="bg-[#13131a] w-full mb-[10px]"
-                      isButtonHidden={true}
-                    />
-                    <SearchBar
-                      placeholder="Write the progress..."
-                      icon={assets.pen}
-                      style="bg-[#13131a] max-w-full"
-                    />
+                    <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+                      Progress
+                    </h4>
+                    {/* <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[315px]"> */}
+                    <div className="mt-[20px] mb-[10px] grid grid-flow-row  xl:grid-cols-2 gap-[10px] overflow-auto overflow-x-hidden h-[357px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
+                      {progress.length > 0 ? (
+                        progress.map((item, index) => (
+                          <ProgressCard key={index} item={item} />
+                        ))
+                      ) : (
+                        <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
+                          No progress update yet...
+                        </p>
+                      )}
+                    </div>
                   </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+              {state.isOwner && (
+                <div className="w-full min-h-[200px] bg-[#1c1c24] p-[20px] rounded-[10px] flex flex-col justify-evenly mt-[10px]">
+                  <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase mb-[10px]">
+                    Update Progress
+                  </h4>
+                  <SearchBar
+                    placeholder="Write title to progress card..."
+                    style="bg-[#13131a] w-full mb-[10px]"
+                    isButtonHidden={true}
+                  />
+                  <SearchBar
+                    placeholder="Write the progress..."
+                    icon={assets.pen}
+                    style="bg-[#13131a] max-w-full mb-[10px]"
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

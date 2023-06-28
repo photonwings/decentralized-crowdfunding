@@ -35,7 +35,7 @@ const SearchBar = ({
       {/* search button */}
       {!isButtonHidden && (
         <div
-          className="w-[72px] h-full rounded-[20px] bg-[#1dc071] flex justify-center items-center cursor-pointer"
+          className="w-[70px] h-[30px] rounded-[20px] bg-[#1dc071] flex justify-center items-center cursor-pointer"
           onClick={handleSendClick}
         >
           <img
