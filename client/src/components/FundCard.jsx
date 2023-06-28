@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-import { tagType, thirdweb } from "../assets";
+import * as assets from "../assets";
 import { daysLeft } from "../utils";
 
 const FundCard = ({
@@ -14,7 +15,21 @@ const FundCard = ({
   handleClick,
 }) => {
   const remainingDays = daysLeft(deadline);
-  let likes = 77;
+  const [ownerProfile, setOwnerProfile] = useState({});
+
+  const BASE_URL = process.env.REACT_APP_BASEURL || "http://localhost:4001/api";
+
+  useEffect(() => {
+    fetchOwner();
+  }, []);
+  const fetchOwner = async () => {
+    axios
+      .get(`${BASE_URL}/get-users?publicAddr=${owner}`)
+      .then((response) => {
+        setOwnerProfile(response.data.result[0]);
+      })
+      .catch((error) => console.log(error));
+  };
 
   return (
     <div
@@ -32,18 +47,8 @@ const FundCard = ({
           <h3 className="font-epilogue font-semibold text-[16px] text-white text-left leading-[26px] truncate">
             {title}
           </h3>
-          {/* <p className="mt-[5px] font-epilogue font-normal text-[#808191] text-left leading-[18px] truncate">
+          <p className="mt-[5px] font-epilogue font-normal text-[13px] text-[#808191] text-left leading-[18px] truncate">
             {description}
-          </p> */}
-        </div>
-        <div className="flex flex-row items-center mb-[6px] mt-[6px]">
-          <img
-            src={tagType}
-            alt="tag"
-            className="w-[17px] h-[17px] object-contain"
-          />
-          <p className="ml-[6px] mt-[5px] font-epilogue font-semibold text-[12px] text-[#b2b3bd] leading-[22px]">
-            {likes} Likes
           </p>
         </div>
 
@@ -67,16 +72,19 @@ const FundCard = ({
         </div>
 
         <div className="flex items-center mt-[20px] gap-[12px]">
-          <div className="w-[30px] h-[30px] rounded-full flex justify-center items-center bg-[#13131a]">
+          <div className="w-[40px] h-[40px] rounded-full flex justify-center items-center bg-[#13131a]">
             <img
-              src={thirdweb}
+              src={assets[ownerProfile.icon]}
               alt="user"
-              className="w-1/2 h-1/2 object-contain"
+              className="h-auto max-w-full rounded-full"
             />
           </div>
-          <p className="flex-1 font-epilogue font-normal text-[12px] text-[#808191] truncate">
-            by <span className="text-[#b2b3bd]">{owner}</span>
-          </p>
+          <div className="flex flex-col justify-center font-epilogue font-normal text-[12px] text-[#808191]">
+            <p className="text-white mr-5">{ownerProfile.nickName}</p>
+            <p className="text-[#b2b3bd]">{` ${owner
+              .toString()
+              .slice(0, 5)}...${owner.toString().slice(-4)}`}</p>
+          </div>
         </div>
       </div>
     </div>
