@@ -248,6 +248,7 @@ Campaign.createPoll = async (poll) => {
 };
 
 Campaign.createComment = async (comment) => {
+  // console.log(comment);
   return new Promise((resolve, reject) => {
     db.query(
       `insert into Comment(campaignAddr, publicAddr, commentText, dateOfComment, isCreator)

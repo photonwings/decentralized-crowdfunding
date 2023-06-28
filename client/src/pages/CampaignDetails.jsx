@@ -97,7 +97,6 @@ const CampaignDetails = () => {
         campaignAddr: state.pId,
       })
       .then((response) => {
-        console.log(response);
         fetchLikes();
         handleIsLiked();
       })
@@ -112,7 +111,6 @@ const CampaignDetails = () => {
         isLiked: isLiked ? 0 : 1,
       })
       .then((response) => {
-        console.log(response);
         fetchLikes();
         fetchIsLiked();
       })
@@ -205,6 +203,25 @@ const CampaignDetails = () => {
     setPollSum(sum);
   };
 
+  const handleCommentSubmit = async (comment) => {
+    axios
+      .post(`${BASE_URL}/create-comment`, {
+        campaignAddr: state.pId,
+        publicAddr: address,
+        commentText: comment,
+        dateOfComment: new Date(
+          Date.now() + 5 * 60 * 60 * 1000 + 30 * 60 * 1000
+        )
+          .toISOString()
+          .slice(0, 19)
+          .replace("T", " "),
+        isCreator: state.owner === address ? 1 : 0,
+      })
+      .then((response) => {
+        fetchComment();
+      })
+      .catch((error) => console.log("Error while createing comment: ", error));
+  };
   //! Pending implementation
   const handleClose = () => {};
 
@@ -367,6 +384,7 @@ const CampaignDetails = () => {
                 placeholder="Add a comment..."
                 icon={assets.send}
                 style="bg-[#13131a] max-w-full"
+                handleSubmit={handleCommentSubmit}
               />
               <div className="mt-[20px] mb-[20px] flex flex-col gap-4 overflow-auto h-[500px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                 {comments.length > 0 ? (
