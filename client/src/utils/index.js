@@ -56,3 +56,26 @@ export const calculatePercentage = (count, pollSum) => {
   }
   return Math.round((count / pollSum) * 100);
 };
+
+export const profileImages = [
+  "profile1",
+  "profile2",
+  "profile3",
+  "profile4",
+  "profile5",
+  "profile6",
+  "profile7",
+  "profile8",
+  "profile9",
+  "profile10",
+  "profile11",
+  "profile12",
+  "profile13",
+  "profile14",
+  "profile15",
+  "profile16",
+  "profile17",
+  "profile18",
+  "profile19",
+  "profile20",
+];

@@ -19,6 +19,7 @@ import pen from "./pen.svg";
 import plus from "./plus.svg";
 import close from "./close.svg";
 import check from "./check.svg";
+import userPen from "./userPen.svg";
 import closeRed from "./closeRed.svg";
 import tempUser from "./tempUser.svg";
 import profile1 from "./profile1.png";
@@ -64,6 +65,7 @@ export {
   plus,
   close,
   check,
+  userPen,
   closeRed,
   tempUser,
   profile1,

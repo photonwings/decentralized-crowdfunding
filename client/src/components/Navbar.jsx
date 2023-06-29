@@ -12,7 +12,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState("dashboard");
   const [toggleDrawer, setToggleDrawer] = useState(false);
-  const { connect, address } = useStateContext();
+  const { address } = useStateContext();
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [user, setUser] = useState({
     publicAddr: "",
@@ -31,16 +31,16 @@ const Navbar = () => {
       axios
         .get(`${BASE_URL}/get-users?publicAddr=${address}`)
         .then((response) => {
-          setUser(response.data.result[0]);
-          // console.log(response.data.result[0]);
+          console.log(response);
+          setUser(
+            response.data.result[0] || {
+              publicAddr: "",
+              nickName: "Connet Wallet",
+              icon: "tempUser",
+            }
+          );
         })
         .catch((error) => console.log("Error while fetching likes", error));
-    } else {
-      setUser({
-        publicAddr: "",
-        nickName: "Connet Wallet",
-        icon: "tempUser",
-      });
     }
   };
   return (
