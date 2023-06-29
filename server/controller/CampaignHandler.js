@@ -23,6 +23,16 @@ CampaignHandler.getIsLIked = async (req, res) => {
   }
 };
 
+CampaignHandler.getIsVoted = async (req, res) => {
+  try {
+    const likes = req.params;
+    const data = await Campaign.getIsVoted(likes);
+    res.status(200).send(data);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 CampaignHandler.getUsers = async (req, res) => {
   try {
     const user = req.query;
@@ -116,7 +126,7 @@ CampaignHandler.createPoll = async (req, res) => {
 CampaignHandler.createComment = async (req, res) => {
   try {
     const comment = req.body;
-    console.log(comment)
+    console.log(comment);
     const data = await Campaign.createComment(comment);
     res.status(200).send(data);
   } catch (error) {
@@ -144,9 +154,10 @@ CampaignHandler.putIsLiked = async (req, res) => {
     res.status(500).send(error);
   }
 };
-CampaignHandler.putOptions = async (req, res) => {
+CampaignHandler.putOption = async (req, res) => {
   try {
     const option = req.body;
+    console.log(option);
     const data = await Campaign.putOption(option);
     res.status(200).send(data);
   } catch (error) {

@@ -21,6 +21,10 @@ app.get(
   "/api/get-is-liked/:campaignAddr/:publicAddr",
   CampaignHandler.getIsLIked
 );
+app.get(
+  "/api/get-is-voted/:campaignAddr/:publicAddr",
+  CampaignHandler.getIsVoted
+);
 app.get("/api/get-users", CampaignHandler.getUsers);
 app.get("/api/get-progress/:campaignAddr", CampaignHandler.getProgress);
 app.get("/api/get-question/:campaignAddr", CampaignHandler.getQuestion);
@@ -37,10 +41,10 @@ app.post("/api/create-comment", CampaignHandler.createComment);
 // Put request
 app.put("/api/put-likes", CampaignHandler.putLikes);
 app.put("/api/put-is-liked", CampaignHandler.putIsLiked);
-app.put("/api/put-option", CampaignHandler.putOptions);
+app.put("/api/put-option", CampaignHandler.putOption);
 
 // Delete poll
-app.delete("/api/delete-poll/:pollId", CampaignHandler.deletePoll);
+app.delete("/api/delete-poll/:campaignAddr", CampaignHandler.deletePoll);
 
 db.connect((err) => {
   if (!err) {

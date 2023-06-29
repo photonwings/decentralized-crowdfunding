@@ -40,6 +40,25 @@ Campaign.getIsLiked = async (likes) => {
   });
 };
 
+Campaign.getIsVoted = async (vote) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `select isVoted,optionId from Vote where campaignAddr = '${vote.campaignAddr}' 
+      and publicAddr = '${vote.publicAddr}'`,
+      (error, result) => {
+        if (error) {
+          reject({
+            status: false,
+            msg: `Databse error while fetching likes: ${error}`,
+          });
+        } else {
+          resolve({ status: true, result: result[0] });
+        }
+      }
+    );
+  });
+};
+
 Campaign.getUsers = async (user) => {
   return new Promise((resolve, reject) => {
     db.query(
@@ -100,7 +119,7 @@ Campaign.getQuestion = async (question) => {
 Campaign.getOptions = async (option) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `select optionName, count from PollOption where campaignAddr = ${option.campaignAddr}`,
+      `select optionId, optionName, count from PollOption where campaignAddr = ${option.campaignAddr}`,
       (error, result) => {
         if (error) {
           reject({
@@ -223,12 +242,13 @@ Campaign.createPoll = async (poll) => {
             msg: `Database error while creating poll question: ${error}`,
           });
         } else {
-          const pollId = result.insertId;
-
-          const optionValues = poll.options.map((option) => [pollId, option]);
-
+          const optionValues = poll.options.map((option) => [
+            poll.campaignAddr,
+            option,
+            0,
+          ]);
           db.query(
-            `insert into PollOption (pollId, optionName) VALUES ?`,
+            `insert into PollOption (campaignAddr, optionName, count) VALUES ?`,
             [optionValues],
             (error, result) => {
               if (error) {
@@ -248,7 +268,6 @@ Campaign.createPoll = async (poll) => {
 };
 
 Campaign.createComment = async (comment) => {
-  // console.log(comment);
   return new Promise((resolve, reject) => {
     db.query(
       `insert into Comment(campaignAddr, publicAddr, commentText, dateOfComment, isCreator)
@@ -308,7 +327,7 @@ Campaign.putIsLiked = async (likes) => {
 Campaign.putOption = async (option) => {
   return new Promise((resolve, reject) => {
     db.query(
-      `update PollOption set count = ${option.count} where optionId = ${option.optionId} and pollId = ${option.pollId}`,
+      `update PollOption set count = ${option.count} where optionId = ${option.optionId} and campaignAddr = ${option.campaignAddr}`,
       (error, result) => {
         if (error) {
           reject({
@@ -316,7 +335,20 @@ Campaign.putOption = async (option) => {
             msg: `Databse error while updating option: ${error}`,
           });
         } else {
-          resolve({ status: true, msg: "Option updated" });
+          db.query(
+            `insert into Vote(campaignAddr, publicAddr, optionId, isVoted)
+             values('${option.campaignAddr}', '${option.publicAddr}','${option.optionId}', 1)`,
+            (error, result) => {
+              if (error) {
+                reject({
+                  status: false,
+                  msg: `Databse error while updating Vote: ${error}`,
+                });
+              } else {
+                resolve({ status: true, msg: "Option updated" });
+              }
+            }
+          );
         }
       }
     );
@@ -326,27 +358,40 @@ Campaign.putOption = async (option) => {
 // Delete request
 Campaign.deletePoll = async (poll) => {
   return new Promise((resolve, reject) => {
-    const pollId = poll.pollId;
-
     db.query(
-      `DELETE FROM PollOption WHERE pollId = ${pollId}`,
+      `DELETE FROM Vote WHERE campaignAddr = ${poll.campaignAddr}`,
       (error, result) => {
         if (error) {
           reject({
             status: false,
-            msg: `Database error while deleting options: ${error}`,
+            msg: `Database error while deleting votes: ${error}`,
           });
         } else {
           db.query(
-            `DELETE FROM Poll WHERE pollId =${pollId}`,
+            `DELETE FROM PollOption WHERE campaignAddr = ${poll.campaignAddr}`,
             (error, result) => {
               if (error) {
                 reject({
                   status: false,
-                  msg: `Database error while deleting poll: ${error}`,
+                  msg: `Database error while deleting options: ${error}`,
                 });
               } else {
-                resolve({ status: true, msg: "Poll and options deleted" });
+                db.query(
+                  `DELETE FROM Poll WHERE campaignAddr = ${poll.campaignAddr}`,
+                  (error, result) => {
+                    if (error) {
+                      reject({
+                        status: false,
+                        msg: `Database error while deleting poll: ${error}`,
+                      });
+                    } else {
+                      resolve({
+                        status: true,
+                        msg: "Poll and options deleted",
+                      });
+                    }
+                  }
+                );
               }
             }
           );

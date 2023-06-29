@@ -44,6 +44,7 @@ const CampaignDetails = () => {
 
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(0);
+  const [isVoted, setIsVoted] = useState({ optionId: 0, isVoted: 0 });
   const [ownerProfile, setOwnerProfile] = useState({});
   const [comments, setComments] = useState([]);
   const [progress, setProgress] = useState([]);
@@ -84,6 +85,7 @@ const CampaignDetails = () => {
       fetchProgress();
       fetchComment();
       fetchPoll();
+      fetchIsVoted();
     }
   }, [contract, address]);
 
@@ -200,9 +202,9 @@ const CampaignDetails = () => {
         question: question.data.result[0].question,
         options: options.data.result,
       };
-      setPoll(questionOptions);
       calculatePoll(questionOptions);
     }
+    setPoll(questionOptions);
   };
 
   const calculatePoll = (poll) => {
@@ -267,11 +269,59 @@ const CampaignDetails = () => {
     }
   };
   const handleAddOption = (option) => {
-    console.log(option);
     setOptions((prev) => [...prev, option]);
   };
-  const handlePollSubmit = () => {};
-  const handlePollClear = () => {};
+  const handlePollSubmit = async () => {
+    if (poll.options.length !== 0) {
+      console.log(poll.options);
+      alert("Already one poll is present");
+      return;
+    }
+    if (question == "") {
+      alert("Please enter the question");
+      return;
+    }
+    if (options.length < 2) {
+      alert("Atleast 2 options should be present");
+      return;
+    }
+
+    console.log({
+      campaignAddr: state.pId,
+      question: question,
+      options: options,
+    });
+    axios
+      .post(`${BASE_URL}/create-poll`, {
+        campaignAddr: state.pId,
+        question: question,
+        options: options,
+      })
+      .then((response) => {
+        setQuestion("");
+        setOptions("");
+        fetchPoll();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handlePollClear = async () => {
+    //Check if poll is not present
+    if (poll.options.length === 0) {
+      alert("No poll is present to delete");
+      return;
+    }
+    if (window.confirm("Please confirm deletion")) {
+      axios
+        .delete(`${BASE_URL}/delete-poll/${state.pId}`)
+        .then((response) => {
+          console.log(response);
+          fetchPoll();
+        })
+        .catch((error) => console.log(error));
+    }
+  };
   const deleteOption = (index) => {
     setOptions((prev) => {
       const updatedOptions = prev.filter((_, i) => i !== index);
@@ -279,6 +329,38 @@ const CampaignDetails = () => {
     });
   };
 
+  const fetchIsVoted = async () => {
+    axios
+      .get(`${BASE_URL}/get-is-voted/${state.pId}/${address}`)
+      .then((response) => {
+        if (response.data.result) {
+          setIsVoted(response.data.result);
+        }
+      })
+      .catch((error) => console.log("Error while fetching isVoted: ", error));
+  };
+
+  const handleOptionClick = async (optionId, count) => {
+    if (isLiked) {
+      alert("Already voted");
+      return;
+    }
+    axios
+      .put(`${BASE_URL}/put-option`, {
+        optionId: optionId,
+        campaignAddr: state.pId,
+        publicAddr: address,
+        count: count + 1,
+      })
+      .then((response) => {
+        setIsLiked(1);
+        fetchPoll();
+        fetchIsVoted();
+      })
+      .catch((error) => {
+        console.log("Error while updaing vote: ", error);
+      });
+  };
   return (
     <div className="mb-10 ">
       {isLoading && <Loader />}
@@ -467,22 +549,24 @@ const CampaignDetails = () => {
                       {poll.question}
                     </p>
                   </div>
-
                   <div className="mt-[20px] mb-[10px] flex flex-col gap-4 overflow-auto overflow-x-hidden h-[325px] scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-gray-600">
                     {poll.options.map((item, index) => (
                       <PollingCard
                         key={index}
                         item={item}
                         pollSummary={pollSum}
+                        handleOptionClick={handleOptionClick}
+                        isDisabled={isVoted.isVoted}
+                        selectedOption={isVoted.optionId}
                       />
                     ))}
                   </div>
                 </div>
               )}
               {state.isOwner && (
-                <div className="bg-[#1c1c24] p-[20px] rounded-[10px] mt-[10px] min-h-[200px]">
+                <div className="bg-[#1c1c24] p-[20px] rounded-[10px] mt-[10px] min-h-[450px]">
                   <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase mb-[10px] ">
-                    Edit Poll
+                    Create Poll
                   </h4>
                   <div>
                     <FormField
@@ -567,9 +651,9 @@ const CampaignDetails = () => {
                 </div>
               )}
               {state.isOwner && (
-                <div className="w-full min-h-[200px] bg-[#1c1c24] p-[20px] rounded-[10px] flex flex-col justify-evenly mt-[10px]">
+                <div className="w-full min-h-[450px] bg-[#1c1c24] p-[20px] rounded-[10px] flex flex-col justify-evenly mt-[10px]">
                   <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase mb-[10px]">
-                    Update Progress
+                    Create Progress
                   </h4>
                   <FormField
                     labelName="Progress Title *"
@@ -585,6 +669,8 @@ const CampaignDetails = () => {
                     placeholder="Enter Progress Description"
                     inputType="text"
                     value={currentProgress.description}
+                    isTextArea={true}
+                    rows={5}
                     handleChange={(e) =>
                       handleProgressFormChange("description", e)
                     }
