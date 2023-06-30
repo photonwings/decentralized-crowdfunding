@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+const { ThirdwebAuth } = require("@thirdweb-dev/auth/express");
+const { PrivateKeyWallet } = require("@thirdweb-dev/auth/evm");
 
 const db = require("./utils/db");
 const CampaignHandler = require("./controller/CampaignHandler");
@@ -10,6 +12,13 @@ app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT;
+
+// const { authRouter, authMiddleware, getUser } = ThirdwebAuth({
+//   domain: "http://localhost:4001",
+//   wallet: new PrivateKeyWallet(process.env.THIRDWEB_AUTH_PRIVATE_KEY || ""),
+// });
+// app.use("/api/auth/payload", authRouter);
+// app.use(authMiddleware);
 
 app.get("/", (req, res) => {
   res.send("API working...");

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ConnectWallet } from "@thirdweb-dev/react";
-
+import { ConnectWallet, useConnectionStatus } from "@thirdweb-dev/react";
 import axios from "axios";
+
 import { useStateContext } from "../context";
 import { CustomButton, SearchBar } from "./";
 import * as assets from "../assets";
@@ -14,6 +14,7 @@ const Navbar = () => {
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const { address } = useStateContext();
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  const connectionStatus = useConnectionStatus();
   const [user, setUser] = useState({
     publicAddr: "",
     nickName: "Connect wallet",
@@ -24,24 +25,42 @@ const Navbar = () => {
 
   useEffect(() => {
     fetchUser();
+    // isRegistered();
   }, [address]);
 
   const fetchUser = async () => {
-    if (address) {
+    if (address && connectionStatus === "connected") {
       axios
         .get(`${BASE_URL}/get-users?publicAddr=${address}`)
         .then((response) => {
-          setUser(
-            response.data.result[0] || {
-              publicAddr: "",
-              nickName: "Connet Wallet",
-              icon: "tempUser",
-            }
-          );
+          console.log(response.data.result);
+          if (response.data.result.length === 0) {
+            navigate("/register");
+          } else {
+            setUser(response.data.result[0]);
+          }
         })
         .catch((error) => console.log("Error while fetching likes", error));
+    } else {
+      setUser({
+        publicAddr: "",
+        nickName: "Connet Wallet",
+        icon: "tempUser",
+      });
     }
   };
+
+  // const isRegistered = async () => {
+  //   if (useConnectionStatus === "connected") {
+  //     console.log(1);
+  //     axios
+  //       .get(`${BASE_URL}/get-users?publicAddr=${address}`)
+  //       .then((response) => {
+  //         console.log(response.data.result[0]);
+  //       })
+  //       .catch((error) => console.log("Error while fetching likes", error));
+  //   }
+  // };
   return (
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
       {/* whole searchbar container */}

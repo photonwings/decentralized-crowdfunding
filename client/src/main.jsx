@@ -12,7 +12,13 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   // ThirdwebProvider is a wrapper
-  <ThirdwebProvider activeChain={Sepolia}>
+  <ThirdwebProvider
+    activeChain={Sepolia}
+    // authConfig={{
+    //   domain: "http://localhost:4001",
+    //   authUrl: "/api/auth/",
+    // }}
+  >
     <Router>
       <StateContextProvider>
         <App />

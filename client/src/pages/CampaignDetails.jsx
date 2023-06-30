@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 import { ethers } from "ethers";
 
 import { useStateContext } from "../context";
@@ -26,8 +27,16 @@ import {
 } from "../temp/data";
 import ProgressCard from "../components/ProgressCard";
 import { setSupportedChains } from "@thirdweb-dev/sdk";
+import { useConnectionStatus, useSDK } from "@thirdweb-dev/react";
 
 const CampaignDetails = () => {
+  // const sdk = useSDK();
+  // const fetchBalace = async () => {
+  //   const balance = await sdk.wallet.getBalance();
+  //   console.log(balance.displayValue);
+  // };
+  // fetchBalace();
+  const connectionStatus = useConnectionStatus();
   const { state } = useLocation();
   const navigate = useNavigate();
   const { donate, getDonations, contract, address } = useStateContext();
@@ -89,9 +98,33 @@ const CampaignDetails = () => {
     }
   }, [contract, address]);
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    color: "#ffff",
+    background: "#808080",
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
+
   const handleDonate = async () => {
     if (amount == "") {
-      alert("Please enter donation amount");
+      Toast.fire({
+        icon: "warning",
+        title: "Please enter valid ETH amount",
+      });
+      return;
+    }
+    if (connectionStatus !== "connected") {
+      Toast.fire({
+        icon: "warning",
+        title: "Connect to wallet before donating",
+      });
       return;
     }
     setIsLoading(true);
@@ -101,6 +134,13 @@ const CampaignDetails = () => {
   };
 
   const handleLikes = async () => {
+    if (connectionStatus !== "connected") {
+      Toast.fire({
+        icon: "warning",
+        title: "Connect to wallet before liking",
+      });
+      return;
+    }
     axios
       .put(`${BASE_URL}/put-likes`, {
         like: isLiked ? likes - 1 : likes + 1,
@@ -214,6 +254,13 @@ const CampaignDetails = () => {
   };
 
   const handleCommentSubmit = async (comment) => {
+    if (connectionStatus !== "connected") {
+      Toast.fire({
+        icon: "warning",
+        title: "Connect to wallet before commenting",
+      });
+      return;
+    }
     axios
       .post(`${BASE_URL}/create-comment`, {
         campaignAddr: state.pId,
@@ -241,7 +288,10 @@ const CampaignDetails = () => {
       currentProgress.progressTitle === "" ||
       currentProgress.description === ""
     ) {
-      alert("Enter Title and Description");
+      Toast.fire({
+        icon: "warning",
+        title: "Enter title and description",
+      });
       return;
     } else {
       axios
@@ -274,15 +324,24 @@ const CampaignDetails = () => {
   const handlePollSubmit = async () => {
     if (poll.options.length !== 0) {
       console.log(poll.options);
-      alert("Already one poll is present");
+      Toast.fire({
+        icon: "warning",
+        title: "Already poll is present",
+      });
       return;
     }
     if (question == "") {
-      alert("Please enter the question");
+      Toast.fire({
+        icon: "warning",
+        title: "Please enter question",
+      });
       return;
     }
     if (options.length < 2) {
-      alert("Atleast 2 options should be present");
+      Toast.fire({
+        icon: "warning",
+        title: "Atleast 2 options shuld be present",
+      });
       return;
     }
 
@@ -309,18 +368,39 @@ const CampaignDetails = () => {
   const handlePollClear = async () => {
     //Check if poll is not present
     if (poll.options.length === 0) {
-      alert("No poll is present to delete");
+      Toast.fire({
+        icon: "warning",
+        title: "No poll is present to delete",
+      });
       return;
     }
-    if (window.confirm("Please confirm deletion")) {
-      axios
-        .delete(`${BASE_URL}/delete-poll/${state.pId}`)
-        .then((response) => {
-          console.log(response);
-          fetchPoll();
-        })
-        .catch((error) => console.log(error));
-    }
+    Swal.fire({
+      title: "Confirm deletion of poll",
+      position: "top-end",
+      toast: true,
+      color: "#ffff",
+      background: "#808080",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${BASE_URL}/delete-poll/${state.pId}`)
+          .then((response) => {
+            console.log(response);
+            fetchPoll();
+            Toast.fire({
+              icon: "success",
+              title: "Poll is deleted",
+            });
+          })
+          .catch((error) => console.log(error));
+      }
+    });
   };
   const deleteOption = (index) => {
     setOptions((prev) => {
@@ -341,8 +421,18 @@ const CampaignDetails = () => {
   };
 
   const handleOptionClick = async (optionId, count) => {
-    if (isLiked) {
-      alert("Already voted");
+    if (connectionStatus !== "connected") {
+      Toast.fire({
+        icon: "warning",
+        title: "Connect to wallet before voting",
+      });
+      return;
+    }
+    if (isVoted.isVoted === 1) {
+      Toast.fire({
+        icon: "warning",
+        title: "Already voted",
+      });
       return;
     }
     axios
@@ -556,7 +646,9 @@ const CampaignDetails = () => {
                         item={item}
                         pollSummary={pollSum}
                         handleOptionClick={handleOptionClick}
-                        isDisabled={isVoted.isVoted}
+                        isDisabled={
+                          isVoted.isVoted || connectionStatus !== "connected"
+                        }
                         selectedOption={isVoted.optionId}
                       />
                     ))}

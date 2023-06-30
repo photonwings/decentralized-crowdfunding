@@ -11,8 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@thirdweb-dev/auth": "^3.2.7",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "ethers": "^5.7.2",
     "express": "^4.18.2",
     "mysql2": "^3.4.0",
     "mysql2-promise": "^0.1.4",

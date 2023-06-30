@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import { CustomButton, FormField, ImageIcon } from "../components";
 import { profileImages } from "../utils";
@@ -13,16 +14,34 @@ const Register = () => {
   const navigate = useNavigate();
   const BASE_URL = import.meta.env.VITE_BASEURL;
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
+
   const getProfileIcon = (name) => {
     setProfileIcon(name);
   };
   const submitNickName = async () => {
     if (nickName === "") {
-      alert("Please Enter Nick Name");
+      Toast.fire({
+        icon: "warning",
+        title: "Please enter nick name",
+      });
       return;
     }
     if (profileIcon === "") {
-      alert("Please Select Profile Icon");
+      Toast.fire({
+        icon: "warning",
+        title: "Please select profile icon",
+      });
       return;
     }
     axios

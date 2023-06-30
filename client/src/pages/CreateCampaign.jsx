@@ -2,17 +2,20 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import { useStateContext } from "../context";
 import { money } from "../assets";
 import { CustomButton, FormField, Loader } from "../components";
 import { checkIfImage } from "../utils";
+import { useConnectionStatus } from "@thirdweb-dev/react";
 
 const CreateCampaign = () => {
   const BASE_URL = import.meta.env.VITE_BASEURL;
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { createCampaign, getIndex, address } = useStateContext();
+  const connectionStatus = useConnectionStatus();
   const [form, setForm] = useState({
     name: "",
     title: "",
@@ -22,12 +25,32 @@ const CreateCampaign = () => {
     image: "",
   });
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
+
   const handleFormFieldChange = (fieldName, e) => {
     setForm({ ...form, [fieldName]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(connectionStatus);
+    if (connectionStatus !== "connected") {
+      Toast.fire({
+        icon: "warning",
+        title: "Connect to wallet before creating campaign",
+      });
+      return;
+    }
 
     checkIfImage(form.image, async (exists) => {
       if (exists) {
@@ -41,7 +64,10 @@ const CreateCampaign = () => {
         setIsLoading(false);
         navigate("/");
       } else {
-        alert("Provide valid image URL");
+        Toast.fire({
+          icon: "warning",
+          title: "Enter valid URL for image",
+        });
         setForm({ ...form, image: "" });
       }
     });
