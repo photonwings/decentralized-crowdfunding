@@ -126,7 +126,6 @@ CampaignHandler.createPoll = async (req, res) => {
 CampaignHandler.createComment = async (req, res) => {
   try {
     const comment = req.body;
-    console.log(comment);
     const data = await Campaign.createComment(comment);
     res.status(200).send(data);
   } catch (error) {
@@ -157,7 +156,6 @@ CampaignHandler.putIsLiked = async (req, res) => {
 CampaignHandler.putOption = async (req, res) => {
   try {
     const option = req.body;
-    console.log(option);
     const data = await Campaign.putOption(option);
     res.status(200).send(data);
   } catch (error) {

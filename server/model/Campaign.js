@@ -33,7 +33,23 @@ Campaign.getIsLiked = async (likes) => {
             msg: `Databse error while fetching likes: ${error}`,
           });
         } else {
-          resolve({ status: true, result: result[0] });
+          if (result.length === 0) {
+            db.query(
+              `insert into Likes(campaignAddr, publicAddr, isLiked) values('${likes.campaignAddr}','${likes.publicAddr}',0)`,
+              (error, insertResult) => {
+                if (error) {
+                  reject({
+                    status: false,
+                    msg: `Database error while creating isLiked: ${error}`,
+                  });
+                } else {
+                  resolve({ status: true, result: { isLiked: 0 } });
+                }
+              }
+            );
+          } else {
+            resolve({ status: true, result: result[0] });
+          }
         }
       }
     );
