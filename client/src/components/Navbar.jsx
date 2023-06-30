@@ -31,7 +31,6 @@ const Navbar = () => {
       axios
         .get(`${BASE_URL}/get-users?publicAddr=${address}`)
         .then((response) => {
-          console.log(response);
           setUser(
             response.data.result[0] || {
               publicAddr: "",
