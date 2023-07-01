@@ -38,6 +38,9 @@ const CreateCampaign = () => {
   });
 
   const handleFormFieldChange = (fieldName, e) => {
+    // if (fieldName === "deadline") {
+
+    // }
     setForm({ ...form, [fieldName]: e.target.value });
   };
 
@@ -149,6 +152,7 @@ const CreateCampaign = () => {
             placeholder="End Date"
             inputType="date"
             value={form.deadline}
+            currentDate={new Date().toISOString().split("T")[0]}
             handleChange={(e) => handleFormFieldChange("deadline", e)}
           />
         </div>

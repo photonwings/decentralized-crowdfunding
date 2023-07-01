@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { ethers } from "ethers";
+import { ethers, providers } from "ethers";
 
 import { useStateContext } from "../context";
 import {
@@ -36,6 +36,7 @@ const CampaignDetails = () => {
   //   console.log(balance.displayValue);
   // };
   // fetchBalace();
+
   const connectionStatus = useConnectionStatus();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -127,10 +128,30 @@ const CampaignDetails = () => {
       });
       return;
     }
+
+    if (remainingDays <= 0) {
+      Toast.fire({
+        icon: "warning",
+        title:
+          "Oops!! Campaign deadline has expired. No more donations are being accepted.",
+      });
+      return;
+    }
+
     setIsLoading(true);
-    await donate(state.pId, amount);
-    navigate("/");
-    setIsLoading(false);
+    try {
+      const data = await donate(state.pId, amount);
+      console.log(data);
+      navigate("/");
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      Toast.fire({
+        icon: "warning",
+        title: "Not sufficient balance",
+      });
+      return;
+    }
   };
 
   const handleLikes = async () => {

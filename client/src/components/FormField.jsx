@@ -7,7 +7,7 @@ const FormField = ({
   isTextArea,
   value,
   handleChange,
-  rows
+  rows,
 }) => {
   return (
     <label className="flex-1 w-full flex flex-col">
@@ -34,6 +34,11 @@ const FormField = ({
           type={inputType}
           step="0.1"
           placeholder={placeholder}
+          min={
+            new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+              .toISOString()
+              .split("T")[0]
+          }
           className="mb-2 py-[15px] sm:px-[25px] px-[15px] outline-none border-[1px] border-[#3a3a43] bg-transparent font-epilogue text-white text-[14px] placeholder:text-[#4b5264] rounded-[10px] sm:min-w-[300px]"
         />
       )}

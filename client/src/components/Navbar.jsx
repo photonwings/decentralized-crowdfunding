@@ -33,7 +33,7 @@ const Navbar = () => {
       axios
         .get(`${BASE_URL}/get-users?publicAddr=${address}`)
         .then((response) => {
-          console.log(response.data.result);
+          // console.log(response.data.result);
           if (response.data.result.length === 0) {
             navigate("/register");
           } else {
