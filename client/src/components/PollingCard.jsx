@@ -38,7 +38,7 @@ const PollingCard = ({
           </label>
         </div>
       </div>
-      <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] break-ll">
+      <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] whitespace-nowrap">
         {calculatePercentage(item.count, pollSummary)} %
       </p>
     </div>

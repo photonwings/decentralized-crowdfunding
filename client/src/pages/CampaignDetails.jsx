@@ -15,6 +15,8 @@ import {
   PollingCard,
   FormField,
   Pill,
+  BarChart,
+  PieChart,
 } from "../components";
 import { calculateBarPercentage, daysLeft } from "../utils";
 // import { close, pen, plus, send, thirdweb } from "../assets";
@@ -28,6 +30,7 @@ import {
 import ProgressCard from "../components/ProgressCard";
 import { setSupportedChains } from "@thirdweb-dev/sdk";
 import { useConnectionStatus, useSDK } from "@thirdweb-dev/react";
+import DoughnutChart from "../components/DoughnutChart";
 
 const CampaignDetails = () => {
   // const sdk = useSDK();
@@ -69,6 +72,7 @@ const CampaignDetails = () => {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([]);
   const [pollSum, setPollSum] = useState(0);
+  const [graphType, setGraphType] = useState("barChart");
 
   const remainingDays = daysLeft(state.deadline);
   const fetchDonators = async () => {
@@ -806,6 +810,56 @@ const CampaignDetails = () => {
               )}
             </div>
           </div>
+          {state.isOwner && (
+            <div className="flex flex-col justify-center items-center bg-[#1c1c24] p-[10px] rounded-[10px]">
+              {/* Graph */}
+              <div className="px-2 py-5 bg-[#28282e] rounded-[10px] my-3">
+                <p className="font-epilogue font-semibold text-[15px] text-white text-center">
+                  {poll.question}
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row">
+                <CustomButton
+                  btnType="button"
+                  title="Bar Chart"
+                  styles={`w-full  m-[10px] ${
+                    graphType === "barChart" ? "bg-[#1dc071]" : "bg-[#8c6dfd]"
+                  }`}
+                  handleClick={() => setGraphType("barChart")}
+                />
+                <CustomButton
+                  btnType="button"
+                  title="Pie Chart"
+                  styles={`w-full  m-[10px] ${
+                    graphType === "pieChart" ? "bg-[#1dc071]" : "bg-[#8c6dfd]"
+                  }`}
+                  handleClick={() => setGraphType("pieChart")}
+                />
+                <CustomButton
+                  btnType="button"
+                  title="Doughnut Chart"
+                  styles={`w-full m-[10px] ${
+                    graphType === "doughnutChart"
+                      ? "bg-[#1dc071]"
+                      : "bg-[#8c6dfd]"
+                  }`}
+                  handleClick={() => setGraphType("doughnutChart")}
+                />
+              </div>
+              {graphType === "pieChart" && (
+                <PieChart poll={poll} style={"max-w-[500px] max-h-[500px]"} />
+              )}
+              {graphType === "barChart" && (
+                <BarChart poll={poll} style={"max-w-[500px] max-h-[500px]"} />
+              )}
+              {graphType === "doughnutChart" && (
+                <DoughnutChart
+                  poll={poll}
+                  style={"max-w-[500px] max-h-[500px]"}
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

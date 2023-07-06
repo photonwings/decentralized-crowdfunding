@@ -62,13 +62,13 @@ const Navbar = () => {
   //   }
   // };
   return (
-    <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
+    <div className="flex md:flex-row flex-col-reverse justify-end mb-[35px] gap-6">
       {/* whole searchbar container */}
-      <SearchBar
+      {/* <SearchBar
         placeholder="Search Campaign"
         icon={assets.search}
         style="bg-[#1c1c24]"
-      />
+      /> */}
       {/* Connect to wallet button and profile icon */}
       <div className="sm:flex hidden flex-row justify-end gap-4">
         <ConnectWallet theme="dark" />

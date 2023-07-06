@@ -12,8 +12,10 @@
     "@thirdweb-dev/auth": "^3.2.6",
     "@thirdweb-dev/react": "^3.14.2",
     "@thirdweb-dev/sdk": "^3.10.24",
+    "chart.js": "^4.3.0",
     "ethers": "^5.7.2",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.4",
     "sweetalert2": "^11.7.12"
